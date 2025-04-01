@@ -4,12 +4,20 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 
-public class Game extends Canvas implements Runnable {
+import com.blackcatstudios.entities.Entity;
+import com.blackcatstudios.entities.Player;
+import com.blackcatstudios.graphics.Spritesheet;
+
+public class Game extends Canvas implements Runnable, KeyListener {
 	
 	private static final long serialVersionUID = 1L;
 	public static JFrame frame;
@@ -18,13 +26,24 @@ public class Game extends Canvas implements Runnable {
 	private final int WIDTH = 240;
 	private final int HEIGHT = 160;
 	private final int SCALE = 3;
-	
 	private BufferedImage image;
+	private Player player;
+	
+	public List<Entity> entities;
+	public Spritesheet spritesheet;
 	
 	public Game() {
+		addKeyListener(this);	
 		setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
 		initFrame();
+		
+		//Initialize objects
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		entities = new ArrayList<Entity>();
+		spritesheet = new Spritesheet("/spritesheet.png");
+		
+		player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
+		entities.add(player);
 	}
 	
 	public void initFrame() {
@@ -53,13 +72,16 @@ public class Game extends Canvas implements Runnable {
 		}
 	}
 	
-	public static  void main(String args[]) {
+	public static void main(String args[]) {
 		Game game = new Game();
 		game.start();
 	}
 	
 	public void tick() {
-		
+		for(int i = 0; i < entities.size(); i++) {
+			Entity entity = entities.get(i);
+			entity.tick();
+		}
 	}
 	
 	public void render() {
@@ -74,7 +96,11 @@ public class Game extends Canvas implements Runnable {
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
 		/*Graphics2D g2 = (Graphics2D) g;*/
- 		
+		for(int i = 0; i < entities.size(); i++) {
+			Entity entity = entities.get(i);
+			entity.render(g);
+		}
+		
 		g.dispose();
 		g = bs.getDrawGraphics();
 		g.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
@@ -110,6 +136,45 @@ public class Game extends Canvas implements Runnable {
 		}
 		
 		stop();
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_D) {
+			player.right = true;
+		}
+		else if(e.getKeyCode() == KeyEvent.VK_A) {
+			player.left = true;
+		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_W) {
+			player.up = true;
+		}
+		else if(e.getKeyCode() == KeyEvent.VK_S) {
+			player.down = true;
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if(e.getKeyCode() == KeyEvent.VK_D) {
+			player.right = false;
+		}
+		else if(e.getKeyCode() == KeyEvent.VK_A) {
+			player.left = false;
+		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_W) {
+			player.up = false;
+		}
+		else if(e.getKeyCode() == KeyEvent.VK_S) {
+			player.down = false;
+		}
 	}
 
 }
