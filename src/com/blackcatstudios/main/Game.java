@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import com.blackcatstudios.entities.Entity;
 import com.blackcatstudios.entities.Player;
 import com.blackcatstudios.graphics.Spritesheet;
+import com.blackcatstudios.world.World;
 
 public class Game extends Canvas implements Runnable, KeyListener {
 	
@@ -31,6 +32,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	
 	public List<Entity> entities;
 	public static Spritesheet spritesheet;
+	public static World world;
 	
 	public Game() {
 		addKeyListener(this);	
@@ -41,8 +43,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		entities = new ArrayList<Entity>();
 		spritesheet = new Spritesheet("/spritesheet.png");
+		world = new World("/map.png");
 		
-		player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
+		player = new Player(16, 16, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
 		entities.add(player);
 	}
 	
@@ -85,26 +88,28 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	}
 	
 	public void render() {
-		BufferStrategy bs = this.getBufferStrategy();	
-		if(bs == null) {
+		BufferStrategy bufferStrategy = this.getBufferStrategy();	
+		if(bufferStrategy == null) {
 			this.createBufferStrategy(3); //Responsavel por otimização. Um buffer é uma área de memória temporária que armazena dados enquanto eles são transferidos de um lugar para outro
 			return;
 		}
 		
-		Graphics g = image.getGraphics();
-		g.setColor(new Color(0, 0, 0));
-		g.fillRect(0, 0, WIDTH, HEIGHT);
+		Graphics graphics = image.getGraphics();
+		graphics.setColor(new Color(0, 0, 0));
+		graphics.fillRect(0, 0, WIDTH, HEIGHT);
 		
 		/*Graphics2D g2 = (Graphics2D) g;*/
+		world.render(graphics);
+		
 		for(int i = 0; i < entities.size(); i++) {
 			Entity entity = entities.get(i);
-			entity.render(g);
+			entity.render(graphics);
 		}
 		
-		g.dispose();
-		g = bs.getDrawGraphics();
-		g.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
-		bs.show();
+		graphics.dispose();
+		graphics = bufferStrategy.getDrawGraphics();
+		graphics.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
+		bufferStrategy.show();
 	}
 	
 	public void run() {

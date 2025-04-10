@@ -32,16 +32,16 @@ public class Player extends Entity {
 			dir = right_dir;
 			x += speed;
 		}
-		else if(left) {
+		if(left) {
 			moved = true;
 			dir = left_dir;
 			x -= speed;
 		}
-		else if(up) {
+		if(up) {
 			moved = true;
 			y -= speed;
 		}
-		else if(down) {
+		if(down) {
 			moved = true;
 			y += speed;
 		}
