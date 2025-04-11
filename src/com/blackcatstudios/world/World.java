@@ -6,12 +6,22 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import com.blackcatstudios.entities.Bullet;
+import com.blackcatstudios.entities.Enemy;
+import com.blackcatstudios.entities.Entity;
+import com.blackcatstudios.entities.Lifepack;
+import com.blackcatstudios.entities.Weapon;
+import com.blackcatstudios.main.Game;
+
 public class World {
 	
 	private Tile[] tiles;
-	private static int floor = 0xFF000000;
 	private static int wall = 0xFFFFFFFF;
 	private static int player = 0xFF0026FF;//Este FF que vem depois do '0x' é necessário pois sem isso o Java considera a opacidade da cor.
+	private static int weapon = 0xFFFF6A00;
+	private static int bullet = 0xFFFFD800;
+	private static int lifepack = 0xFF4CFF00;
+	private static int enemy = 0xFFFF0000;
 	
 	public static int WIDTH, HEIGHT;
 
@@ -31,19 +41,22 @@ public class World {
 				for(int yy = 0; yy < map.getHeight(); yy++) {
 					int currentPixel = pixels[xx + (yy * map.getWidth())];
 					
-					if(currentPixel == floor) {
-						tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);
-					}
-					else if(currentPixel == wall) {
+					tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);
+					
+					if(currentPixel == wall)
 						tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_WALL);
-					}
 					else if(currentPixel == player) {
-						tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);
+						Game.player.setX(xx * 16);
+						Game.player.setY(yy * 16);
 					}
-					else {
-						//colocar o tile do chão por hora
-						tiles[xx + (yy * WIDTH)] = new FloorTile(xx * 16, yy * 16, Tile.TILE_FLOOR);
-					}
+					else if(currentPixel == weapon)
+						Game.entities.add(new Weapon(xx * 16, yy * 16, 16, 16, Entity.WEAPON_ENTITY));
+					else if(currentPixel == bullet)
+						Game.entities.add(new Bullet(xx * 16, yy * 16, 16, 16, Entity.BULLET_ENTITY));
+					else if(currentPixel == lifepack)
+						Game.entities.add(new Lifepack(xx * 16, yy * 16, 16, 16, Entity.LIFEPACK_ENTITY));
+					else if(currentPixel == enemy)
+						Game.entities.add(new Enemy(xx * 16, yy * 16, 16, 16, Entity.ENEMY_ENTITY));
 				}
 			}
 			
@@ -53,8 +66,17 @@ public class World {
 	}
 	
 	public void render(Graphics graphics) {
-		for(int xx = 0; xx < WIDTH; xx++) {
-			for(int yy = 0; yy < HEIGHT; yy++) {
+		int camera_xstart = Camera.x >> 4; //Usamos int neste momento pois não queremos números quebrados e apenas inteiros paea inciar o eixo x de nossa camera
+		int camera_ystart = Camera.y >> 4;
+		
+		int camera_xfinal = camera_xstart + (Game.WIDTH >> 4);//esse sinal '>>' se chama bitwise shift right, ele desloca os bits 4 casas para a direita
+		int camera_yfinal = camera_ystart + (Game.HEIGHT >> 4);
+		
+		for(int xx = camera_xstart; xx <= camera_xfinal; xx++) {
+			for(int yy = camera_ystart; yy <= camera_yfinal; yy++) {
+				if(xx < 0 || yy < 0 || xx >= WIDTH || yy >= HEIGHT)
+					continue;
+				
 				Tile tile = tiles[xx + (yy * WIDTH)];
 				tile.render(graphics);
 			}
