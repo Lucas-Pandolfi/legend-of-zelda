@@ -39,8 +39,10 @@ public class World {
 			
 			map.getRGB(0,  0, map.getWidth(), map.getHeight(), pixels, 0, map.getWidth());
 			
-			for(int xx = 0; xx < map.getWidth(); xx++) {
-				for(int yy = 0; yy < map.getHeight(); yy++) {
+			for(int xx = 0; xx < map.getWidth(); xx++) 
+			{
+				for(int yy = 0; yy < map.getHeight(); yy++) 
+				{
 					
 					int currentPixel = pixels[xx + (yy * map.getWidth())];
 					
@@ -48,7 +50,8 @@ public class World {
 
 					if (currentPixel == wall)			
 						tiles[xx + (yy * WIDTH)] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL);
-					else if(currentPixel == player) {
+					else if(currentPixel == player) 
+					{
 						Game.player.setX(xx * TILE_SIZE);
 						Game.player.setY(yy * TILE_SIZE);
 					}
@@ -58,8 +61,12 @@ public class World {
 						Game.entities.add(new Bullet(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.BULLET_ENTITY));
 					else if(currentPixel == lifepack)
 						Game.entities.add(new Lifepack(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.LIFEPACK_ENTITY));
-					else if(currentPixel == enemy)
-						Game.entities.add(new Enemy(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_ENTITY));
+					else if(currentPixel == enemy) 
+					{
+						Enemy enemy = new Enemy(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_ENTITY);
+						Game.entities.add(enemy);
+						Game.enemies.add(enemy);
+					}
 				}
 			}
 		} catch (IOException e) {
