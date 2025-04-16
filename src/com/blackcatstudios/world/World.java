@@ -1,5 +1,6 @@
 package com.blackcatstudios.world;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class World {
 	public static Tile[] tiles;
 	public static int WIDTH, HEIGHT;
 	public static final int TILE_SIZE = 16;
+	public static int margin = 2;
 
 	public World(String path) {
 		try {
@@ -37,13 +39,14 @@ public class World {
 			
 			map.getRGB(0,  0, map.getWidth(), map.getHeight(), pixels, 0, map.getWidth());
 			
-			for(int xx = 0; xx < map.getHeight(); xx++) {
+			for(int xx = 0; xx < map.getWidth(); xx++) {
 				for(int yy = 0; yy < map.getHeight(); yy++) {
+					
 					int currentPixel = pixels[xx + (yy * map.getWidth())];
 					
 					tiles[xx + (yy * WIDTH)] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);
-					
-					if(currentPixel == wall)
+
+					if (currentPixel == wall)			
 						tiles[xx + (yy * WIDTH)] = new WallTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_WALL);
 					else if(currentPixel == player) {
 						Game.player.setX(xx * TILE_SIZE);
@@ -59,29 +62,28 @@ public class World {
 						Game.entities.add(new Enemy(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_ENTITY));
 				}
 			}
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static boolean collidedWithWallTile(int xNext, int yNext) {
-		int x1 = xNext / TILE_SIZE;
-		int y1 = yNext / TILE_SIZE;
-		
-		int x2 = (xNext + TILE_SIZE - 1) / TILE_SIZE;
-		int y2 = yNext / TILE_SIZE;
-		
-		int x3 = xNext / TILE_SIZE;
-		int y3 = (yNext + TILE_SIZE - 1) / TILE_SIZE;
-		
-		int x4 = (xNext + TILE_SIZE - 1) / TILE_SIZE;
-		int y4 = (yNext + TILE_SIZE - 1) / TILE_SIZE;
-		
-		return !((tiles[x1 + (y1 * World.WIDTH)] instanceof WallTile)
-				|| (tiles[x2 + (y2 * World.WIDTH)] instanceof WallTile)
-				|| (tiles[x3 + (y3 * World.WIDTH)] instanceof WallTile)
-				|| (tiles[x4 + (y4 * World.WIDTH)] instanceof WallTile));
+	public static boolean collidedWithWallTile(int x, int y, int width, int height) {
+	    // Verifica todos os tiles que intersectam com a entidade
+	    int x1 = x / TILE_SIZE;
+	    int y1 = y / TILE_SIZE;
+	    int x2 = (x + width - 1) / TILE_SIZE;
+	    int y2 = (y + height - 1) / TILE_SIZE;
+	    
+	    for(int xx = x1; xx <= x2; xx++) {
+	        for(int yy = y1; yy <= y2; yy++) {
+	            if(xx < 0 || yy < 0 || xx >= WIDTH || yy >= HEIGHT)
+	                return false;
+	                
+	            if(tiles[xx + (yy * WIDTH)] instanceof WallTile)
+	                return false;
+	        }
+	    }
+	    return true;
 	}
 	
 	public void render(Graphics graphics) {

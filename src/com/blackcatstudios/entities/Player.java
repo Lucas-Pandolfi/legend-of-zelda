@@ -29,24 +29,25 @@ public class Player extends Entity {
 
 	public void tick() {
 		moved = false;
-		if(right && World.collidedWithWallTile((int)(x + (int)speed), this.getY())) {
-			moved = true;
-			dir = right_dir;
-			x += speed;
-		}
-		else if(left && World.collidedWithWallTile( (int)(x - (int)speed), this.getY())) {
-			moved = true;
-			dir = left_dir;
-			x -= speed;
-		}
-		if(up && World.collidedWithWallTile(this.getX(), (int)(y - (int)speed))) {
-			moved = true;
-			y -= speed;
-		}
-		else if(down && World.collidedWithWallTile(this.getX(), (int)(y + (int)speed))) {
-			moved = true;
-			y += speed;
-		}
+		if(right && World.collidedWithWallTile((int)(x + speed), (int)y, width, height)) {
+	        moved = true;
+	        dir = right_dir;
+	        x += speed;
+	    }
+	    else if(left && World.collidedWithWallTile((int)(x - speed), (int)y, width, height)) {
+	        moved = true;
+	        dir = left_dir;
+	        x -= speed;
+	    }
+	    
+	    if(up && World.collidedWithWallTile((int)x, (int)(y - speed), width, height)) {
+	        moved = true;
+	        y -= speed;
+	    }
+	    else if(down && World.collidedWithWallTile((int)x, (int)(y + speed), width, height)) {
+	        moved = true;
+	        y += speed;
+	    }
 		
 		if(moved) {
 			frames++;
