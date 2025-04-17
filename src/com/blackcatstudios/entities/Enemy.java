@@ -25,29 +25,36 @@ public class Enemy extends Entity {
 	}
 	
 	public void tick() {
-		if(Game.random.nextInt(100) < 60) 
+		if(!enemyCollidingWithPlayer()) 
 		{
-			if((int)x < Game.player.getX() && World.collidedWithWallTile((int)(x + speed), (int)y, width, height)
-					&& !enemyCollidingAnotherEnemy((int)(x + speed), (int)y))
-		        x += speed;
-		    else if((int)x > Game.player.getX() && World.collidedWithWallTile((int)(x - speed), (int)y, width, height)
-		    		&& !enemyCollidingAnotherEnemy((int)(x - speed), (int)y))
-		        x -= speed;
-		    
-		    if((int)y < Game.player.getY() && World.collidedWithWallTile((int)x, (int)(y + speed), width, height)
-		    		&& !enemyCollidingAnotherEnemy((int)x, (int)(y + speed)))
-		        y += speed;
-		    else if((int)y > Game.player.getY() && World.collidedWithWallTile((int)x, (int)(y - speed), width, height)
-		    		&& !enemyCollidingAnotherEnemy((int)x, (int)(y - speed)))
-		        y -= speed;
-		    
-		    frames++;
-			if(frames == maxFrames) {
-				frames = 0;
-				index++;
+			if(Game.random.nextInt(100) < 60) 
+			{
+				if((int)x < Game.player.getX() && World.collidedWithWallTile((int)(x + speed), (int)y, width, height)
+						&& !enemyCollidingAnotherEnemy((int)(x + speed), (int)y))
+			        x += speed;
+			    else if((int)x > Game.player.getX() && World.collidedWithWallTile((int)(x - speed), (int)y, width, height)
+			    		&& !enemyCollidingAnotherEnemy((int)(x - speed), (int)y))
+			        x -= speed;
+			    
+			    if((int)y < Game.player.getY() && World.collidedWithWallTile((int)x, (int)(y + speed), width, height)
+			    		&& !enemyCollidingAnotherEnemy((int)x, (int)(y + speed)))
+			        y += speed;
+			    else if((int)y > Game.player.getY() && World.collidedWithWallTile((int)x, (int)(y - speed), width, height)
+			    		&& !enemyCollidingAnotherEnemy((int)x, (int)(y - speed)))
+			        y -= speed;
+			    
+			    animation();
+			}
+		}
+		else 
+		{
+			animation();
+			
+			if(Game.random.nextInt(100) < 10) {
+				 Game.player.life -= Game.random.nextInt(6);
 				
-				if(index >= maxIndex)
-					index = 0;
+				if(Game.player.life <= 0)
+					System.out.println("Mio pá nois parceiro!");
 			}
 		}
 	}
@@ -59,6 +66,14 @@ public class Enemy extends Entity {
 		/*super.render(graphics);
 		graphics.setColor(Color.blue);
 		graphics.fillRect(this.getX() + maskX - Camera.x, this.getY() + maskY - Camera.y, maskWidth, maskHeight);*/
+	}
+	
+	private boolean enemyCollidingWithPlayer() {
+		Rectangle currentEnemy = new Rectangle(this.getX() + maskX, this.getY() + maskY, maskWidth, maskHeight);
+		
+		Rectangle player = new Rectangle(Game.player.getX(), Game.player.getY(), 16,  16);
+		
+		return currentEnemy.intersects(player);
 	}
 	
 	private boolean enemyCollidingAnotherEnemy(int xNext, int yNext) {
@@ -82,5 +97,16 @@ public class Enemy extends Entity {
 	private void getSprites() {
 		sprites[0] = Game.spritesheet.getSprite(80, 16, ENEMY_SIZE, ENEMY_SIZE);
 		sprites[1] = Game.spritesheet.getSprite(96, 16, ENEMY_SIZE, ENEMY_SIZE);
+	}
+	
+	private void animation() {
+		frames++;
+		if(frames == maxFrames) {
+			frames = 0;
+			index++;
+			
+			if(index >= maxIndex)
+				index = 0;
+		}
 	}
 }

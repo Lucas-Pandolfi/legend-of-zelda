@@ -18,6 +18,7 @@ import com.blackcatstudios.entities.Enemy;
 import com.blackcatstudios.entities.Entity;
 import com.blackcatstudios.entities.Player;
 import com.blackcatstudios.graphics.Spritesheet;
+import com.blackcatstudios.graphics.UI;
 import com.blackcatstudios.world.World;
 
 public class Game extends Canvas implements Runnable, KeyListener {
@@ -31,6 +32,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	private final int SCALE = 3;
 	private BufferedImage image;
 	
+	public static UI ui;
 	public static World world;
 	public static Player player;
 	public static Random random;
@@ -44,6 +46,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		initFrame();
 		
 		//Initialize objects
+		ui = new UI();
 		random = new Random();
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		entities = new ArrayList<Entity>();
@@ -110,6 +113,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			Entity entity = entities.get(i);
 			entity.render(graphics);
 		}
+		
+		ui.render(graphics);
 		
 		graphics.dispose();
 		graphics = bufferStrategy.getDrawGraphics();
