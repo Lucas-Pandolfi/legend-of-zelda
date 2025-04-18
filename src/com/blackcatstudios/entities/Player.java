@@ -2,6 +2,7 @@ package com.blackcatstudios.entities;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.Iterator;
 
 import com.blackcatstudios.main.Game;
 import com.blackcatstudios.world.Camera;
@@ -28,6 +29,15 @@ public class Player extends Entity {
 	}
 
 	public void tick() {
+		walk();
+		
+		getLife();
+		
+		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH / 2), 0, World.WIDTH * 16 - Game.WIDTH);
+		Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT / 2), 0, World.HEIGHT * 16 - Game.HEIGHT);
+	}
+	
+	private void walk() {
 		moved = false;
 		if(right && World.collidedWithWallTile((int)(x + speed), (int)y, width, height)) {
 	        moved = true;
@@ -60,18 +70,23 @@ public class Player extends Entity {
 					index = 0;
 			}
 		}
-		
-		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH / 2), 0, World.WIDTH * 16 - Game.WIDTH);
-		Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT / 2), 0, World.HEIGHT * 16 - Game.HEIGHT);
 	}
 	
-	public void render(Graphics graphics) {
-		if(dir == right_dir) {
-			graphics.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);			
-		}
-		else if(dir == left_dir) {
-			graphics.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
-		}
+	private void getLife() {
+	    for(int i = 0; i < Game.lifepacksOnMap.size(); i++) {
+	        Lifepack currentLifepack = Game.lifepacksOnMap.get(i);
+	        
+	        if(Entity.isColidding(this, currentLifepack)) {
+	            life += 8;
+	            
+	            if(life >= 100)
+	                life = 100;
+	            
+	            Game.entities.remove(currentLifepack);
+	            Game.lifepacksOnMap.remove(i);
+	            return;
+	        }
+	    }   
 	}
 	
 	private void getSprites() {
@@ -81,6 +96,15 @@ public class Player extends Entity {
 		
 		for(int i = 0; i < leftPlayer.length; i++) {
 			leftPlayer[i] = Game.spritesheet.getSprite(32 + (i * 16), 16, width, height);			
+		}
+	}
+	
+	public void render(Graphics graphics) {
+		if(dir == right_dir) {
+			graphics.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);			
+		}
+		else if(dir == left_dir) {
+			graphics.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		}
 	}
 }

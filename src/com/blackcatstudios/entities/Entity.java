@@ -1,12 +1,16 @@
 package com.blackcatstudios.entities;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import com.blackcatstudios.main.Game;
 import com.blackcatstudios.world.Camera;
 
 public class Entity {
+	private int maskX, maskY, mWidth, mHeight;
+	
 	protected double x;
 	protected double y;
 	protected int width;
@@ -24,6 +28,11 @@ public class Entity {
 		this.width = width;
 		this.height = height;
 		this.sprite = sprite;
+		
+		this.maskX = 0;
+		this.maskY = 0;
+		this.mWidth = width;
+		this.mHeight = height;
 	}
 	
 	public void setX(int newX) {
@@ -50,11 +59,32 @@ public class Entity {
 		return this.height;
 	}
 	
+	public void setMask(int maskX, int maskY, int mWidth, int mHeight) {
+		this.maskX = maskX;
+		this.maskY = maskY;
+		this.mWidth = mWidth;
+		this.mHeight = mHeight;
+	}
+	
 	public void tick() {
 		
 	}
 	
-	public void render(Graphics g) {
-		g.drawImage(sprite, this.getX() - Camera.x, this.getY() - Camera.y, null);
+	public static boolean isColidding(Entity entity1, Entity entity2) {
+		Rectangle entityMask1 = new Rectangle(entity1.getX() + entity1.maskX, entity1.getY() + entity1.maskY, entity1.mWidth, entity1.mHeight);
+		Rectangle entityMask2 = new Rectangle(entity2.getX() + entity2.maskX, entity2.getY() + entity2.maskY, entity2.mWidth, entity2.mHeight);
+		
+		if(entityMask1.intersects(entityMask2))
+			System.out.println("colidiu");
+			
+		return entityMask1.intersects(entityMask2);
+	}
+	
+	public void render(Graphics graphics) {
+		graphics.drawImage(sprite, this.getX() - Camera.x, this.getY() - Camera.y, null);
+		
+		//Usado para visualizar a colisão das entidade
+		//graphics.setColor(Color.red);
+		//graphics.fillRect(this.getX() - Camera.x, this.getY() - Camera.y, mWidth, mHeight);
 	}
 }

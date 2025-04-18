@@ -79,9 +79,9 @@ public class Enemy extends Entity {
 	private boolean enemyCollidingAnotherEnemy(int xNext, int yNext) {
 		Rectangle currentEnemy = new Rectangle(xNext + maskX, yNext + maskY, maskWidth, maskHeight);
 		
-		for(int i = 0; i < Game.enemies.size(); i++) 
+		for(int i = 0; i < Game.enemiesOnMap.size(); i++) 
 		{
-			Enemy enemy = Game.enemies.get(i);
+			Enemy enemy = Game.enemiesOnMap.get(i);
 			if(enemy == this)// se o enemy que eu estiver percorrendo for a minha própria classe eu apenas continuo o loopiong
 				continue;
 			

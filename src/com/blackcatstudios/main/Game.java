@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 
 import com.blackcatstudios.entities.Enemy;
 import com.blackcatstudios.entities.Entity;
+import com.blackcatstudios.entities.Lifepack;
 import com.blackcatstudios.entities.Player;
 import com.blackcatstudios.graphics.Spritesheet;
 import com.blackcatstudios.graphics.UI;
@@ -37,7 +38,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static Player player;
 	public static Random random;
 	public static List<Entity> entities;
-	public static List<Enemy> enemies;
+	public static List<Enemy> enemiesOnMap;
+	public static List<Lifepack> lifepacksOnMap;
 	public static Spritesheet spritesheet;
 	
 	public Game() {
@@ -50,7 +52,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		random = new Random();
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		entities = new ArrayList<Entity>();
-		enemies = new ArrayList<Enemy>();
+		enemiesOnMap = new ArrayList<Enemy>();
+		lifepacksOnMap = new ArrayList<Lifepack>();
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
 		entities.add(player);

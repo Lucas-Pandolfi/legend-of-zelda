@@ -59,13 +59,17 @@ public class World {
 						Game.entities.add(new Weapon(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.WEAPON_ENTITY));
 					else if(currentPixel == bullet)
 						Game.entities.add(new Bullet(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.BULLET_ENTITY));
-					else if(currentPixel == lifepack)
-						Game.entities.add(new Lifepack(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.LIFEPACK_ENTITY));
+					else if(currentPixel == lifepack) 
+					{
+						Lifepack lifepack = new Lifepack(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.LIFEPACK_ENTITY);
+						Game.entities.add(lifepack);
+						Game.lifepacksOnMap.add(lifepack);
+					}
 					else if(currentPixel == enemy) 
 					{
 						Enemy enemy = new Enemy(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.ENEMY_ENTITY);
 						Game.entities.add(enemy);
-						Game.enemies.add(enemy);
+						Game.enemiesOnMap.add(enemy);
 					}
 				}
 			}
