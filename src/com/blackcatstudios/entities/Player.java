@@ -14,13 +14,15 @@ import com.blackcatstudios.world.World;
 
 public class Player extends Entity {
 
+	public double speed = 1.2;
 	public boolean right, left, up, down;
 	public int right_dir = 0, left_dir = 1, up_dir = 2, down_dir = 3;
 	public int dir = right_dir;
-	public double speed = 1.2;
-	public double life = 100, maxLife = 100;
+	
 	public int ammo = 0;
 	public boolean  isDamaged = false;
+	public boolean hasGun = false;
+	public double life = 100, maxLife = 100;
 	
 	private int damageFrames = 0;
 	private boolean moved = false;
@@ -39,6 +41,8 @@ public class Player extends Entity {
 		walk();
 		
 		getLife();
+		
+		getWeapon();
 		
 		getBullet();
 		
@@ -102,6 +106,20 @@ public class Player extends Entity {
 	    }   
 	}
 	
+	private void getWeapon() {
+	    for(int i = 0; i < Game.weaponsOnMap.size(); i++) {
+	        Weapon currentweapon = Game.weaponsOnMap.get(i);
+	        
+	        if(Entity.isColidding(this, currentweapon)) {
+	        	hasGun = true;
+	        	
+	            Game.entities.remove(currentweapon);
+	            Game.weaponsOnMap.remove(i);
+	            return;
+	        }
+	    }   
+	}
+	
 	private void getBullet() {
 	    for(int i = 0; i < Game.bulletsOnMap.size(); i++) {
 	        Bullet currentBullet = Game.bulletsOnMap.get(i);
@@ -150,6 +168,7 @@ public class Player extends Entity {
 		Game.enemiesOnMap = new ArrayList<Enemy>();
 		Game.lifepacksOnMap = new ArrayList<Lifepack>();
 		Game.bulletsOnMap = new ArrayList<Bullet>();
+		Game.weaponsOnMap = new ArrayList<Weapon>();
 		Game.spritesheet = new Spritesheet("/spritesheet.png");
 		Game.player = new Player(0, 0, 16, 16, Game.spritesheet.getSprite(32, 0, 16, 16));
 		Game.entities.add(Game.player);
@@ -162,10 +181,18 @@ public class Player extends Entity {
 		if(!isDamaged) 
 		{
 			if(dir == right_dir) {
-				graphics.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);			
+				graphics.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+				
+				//Desenhar a arma do player para a direita
+				if(hasGun)
+					graphics.drawImage(Entity.WEAPON_RIGHT, this.getX() + 11 - Camera.x, this.getY() - 2 - Camera.y, null);
 			}
 			else if(dir == left_dir) {
-				graphics.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+				graphics.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - 2 - Camera.y, null);
+				
+				//Desenhar a arma do player para a esquerda
+				if(hasGun)
+					graphics.drawImage(Entity.WEAPON_LEFT, this.getX() - 10 - Camera.x, this.getY() - 4 - Camera.y, null);
 			}
 		}
 		else

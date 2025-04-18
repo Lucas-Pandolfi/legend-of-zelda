@@ -55,9 +55,14 @@ public class World {
 						Game.player.setX(xx * TILE_SIZE);
 						Game.player.setY(yy * TILE_SIZE);
 					}
-					else if(currentPixel == weapon)
-						Game.entities.add(new Weapon(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.WEAPON_ENTITY));
-					else if(currentPixel == bullet) {
+					else if(currentPixel == weapon) 
+					{
+						Weapon weapon = new Weapon(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.WEAPON_ENTITY);
+						Game.entities.add(weapon);
+						Game.weaponsOnMap.add(weapon);
+					}
+					else if(currentPixel == bullet) 
+					{
 						Bullet bullet = new Bullet(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.BULLET_ENTITY);
 						Game.entities.add(bullet);
 						Game.bulletsOnMap.add(bullet);

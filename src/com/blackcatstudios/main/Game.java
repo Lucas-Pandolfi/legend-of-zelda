@@ -20,6 +20,7 @@ import com.blackcatstudios.entities.Enemy;
 import com.blackcatstudios.entities.Entity;
 import com.blackcatstudios.entities.Lifepack;
 import com.blackcatstudios.entities.Player;
+import com.blackcatstudios.entities.Weapon;
 import com.blackcatstudios.graphics.Spritesheet;
 import com.blackcatstudios.graphics.UI;
 import com.blackcatstudios.world.World;
@@ -43,6 +44,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static List<Enemy> enemiesOnMap;
 	public static List<Lifepack> lifepacksOnMap;
 	public static List<Bullet> bulletsOnMap;
+	public static List<Weapon> weaponsOnMap;
 	public static Spritesheet spritesheet;
 	
 	public Game() {
@@ -58,6 +60,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		enemiesOnMap = new ArrayList<Enemy>();
 		lifepacksOnMap = new ArrayList<Lifepack>();
 		bulletsOnMap = new ArrayList<Bullet>();
+		weaponsOnMap = new ArrayList<Weapon>();
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
 		entities.add(player);
