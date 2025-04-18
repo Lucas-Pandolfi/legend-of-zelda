@@ -3,6 +3,7 @@ package com.blackcatstudios.main;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -14,6 +15,7 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
+import com.blackcatstudios.entities.Bullet;
 import com.blackcatstudios.entities.Enemy;
 import com.blackcatstudios.entities.Entity;
 import com.blackcatstudios.entities.Lifepack;
@@ -40,6 +42,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static List<Entity> entities;
 	public static List<Enemy> enemiesOnMap;
 	public static List<Lifepack> lifepacksOnMap;
+	public static List<Bullet> bulletsOnMap;
 	public static Spritesheet spritesheet;
 	
 	public Game() {
@@ -54,6 +57,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		entities = new ArrayList<Entity>();
 		enemiesOnMap = new ArrayList<Enemy>();
 		lifepacksOnMap = new ArrayList<Lifepack>();
+		bulletsOnMap = new ArrayList<Bullet>();
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
 		entities.add(player);
@@ -109,7 +113,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		graphics.setColor(new Color(0, 0, 0));
 		graphics.fillRect(0, 0, WIDTH, HEIGHT);
 		
-		/*Graphics2D g2 = (Graphics2D) g;*/
 		world.render(graphics);
 		
 		for(int i = 0; i < entities.size(); i++) {
@@ -122,6 +125,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		graphics.dispose();
 		graphics = bufferStrategy.getDrawGraphics();
 		graphics.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
+		
+		//Renderizando textos abaixo do "graphics.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);" faz com a fonte não fique pixelizada
+		/*graphics.setFont(new Font("arial", Font.BOLD, 17));
+		graphics.setColor(Color.white);
+		graphics.drawString("Munição: " + Player.ammo, 620, 18);*/
+		
 		bufferStrategy.show();
 	}
 	

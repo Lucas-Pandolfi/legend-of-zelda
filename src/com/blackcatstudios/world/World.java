@@ -57,8 +57,11 @@ public class World {
 					}
 					else if(currentPixel == weapon)
 						Game.entities.add(new Weapon(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.WEAPON_ENTITY));
-					else if(currentPixel == bullet)
-						Game.entities.add(new Bullet(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.BULLET_ENTITY));
+					else if(currentPixel == bullet) {
+						Bullet bullet = new Bullet(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.BULLET_ENTITY);
+						Game.entities.add(bullet);
+						Game.bulletsOnMap.add(bullet);
+					}
 					else if(currentPixel == lifepack) 
 					{
 						Lifepack lifepack = new Lifepack(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.LIFEPACK_ENTITY);
