@@ -18,12 +18,15 @@ public class Player extends Entity {
 	public boolean right, left, up, down;
 	public int right_dir = 0, left_dir = 1, up_dir = 2, down_dir = 3;
 	public int dir = right_dir;
+	public int mx = 0;
+	public int my = 0;
 	
 	public int ammo = 0;
 	public boolean  isDamaged = false;
 	public boolean hasGun = false;
 	public double life = 100, maxLife = 100;
-	public boolean shoot = false;
+	public boolean keyboardShoot = false;
+	public boolean mouseShoot = false;
 	
 	private int damageFrames = 0;
 	private boolean moved = false;
@@ -45,11 +48,13 @@ public class Player extends Entity {
 		
 		getWeapon();
 		
-		getBullet();
+		getAmmo();
 		
 		damageAnimation();
 		
 		Shoot();
+		
+		MouseShoot();
 		
 		gameOver();
 		
@@ -122,12 +127,12 @@ public class Player extends Entity {
 	    }   
 	}
 	
-	private void getBullet() {
+	private void getAmmo() {
 	    for(int i = 0; i < Game.bulletsOnMap.size(); i++) {
 	        Bullet currentBullet = Game.bulletsOnMap.get(i);
 	        
 	        if(Entity.isColidding(this, currentBullet)) {
-	            ammo += 4;
+	            ammo += 8;
 	            
 	            Game.entities.remove(currentBullet);
 	            Game.bulletsOnMap.remove(i);
@@ -166,9 +171,9 @@ public class Player extends Entity {
 	}
 	
 	private void Shoot() {
-		if(shoot)
+		if(keyboardShoot)
 		{
-			shoot = false;
+			keyboardShoot = false;
 			if(hasGun && ammo > 0) 
 			{
 				ammo--;
@@ -190,6 +195,36 @@ public class Player extends Entity {
 				}
 				
 				BulletShoot bulletShoot = new BulletShoot(this.getX() + px, this.getY() + py, 2, 2, null, directionX, 0);
+				Game.bulletShoots.add(bulletShoot);
+			}
+		}
+	}
+	
+	private void MouseShoot() {
+		if(mouseShoot)
+		{
+			mouseShoot = false;
+			if(hasGun && ammo > 0) 
+			{
+				ammo--;				
+				double angle = Math.atan2(my - (this.getY() + 8 - Camera.y), mx - (this.getX() + 8 - Camera.x));
+				double directionX = Math.cos(angle);
+				double directionY = Math.sin(angle);
+				int px = 0;
+				int py = 8;
+				
+				if(dir == right_dir) 
+				{
+					px = 18;
+					py = 5;
+				}
+				else 
+				{
+					px = -3;
+					py = 3;
+				}
+				
+				BulletShoot bulletShoot = new BulletShoot(this.getX() + px, this.getY() + py, 2, 2, null, directionX, directionY);
 				Game.bulletShoots.add(bulletShoot);
 			}
 		}

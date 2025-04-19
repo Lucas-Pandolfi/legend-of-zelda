@@ -14,9 +14,9 @@ public class Enemy extends Entity {
 	private double speed = 1;
 	private int maskX = 1, maskY = 1, maskWidth = 13, maskHeight = 14;
 	private int frames = 0, maxFrames = 20, index = 0, maxIndex = 2;
-	private BufferedImage[] sprites = new BufferedImage[2]; 
-	
+	private BufferedImage[] sprites = new BufferedImage[2];
 	private static int ENEMY_SIZE = 16;
+	private int life = 3;
 	
 	public Enemy(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, null);
@@ -58,6 +58,14 @@ public class Enemy extends Entity {
 					System.out.println("Mio pá nois parceiro!");
 			}
 		}
+		
+		enemyCollidingWithBullet();
+		
+		if(life <= 0) 
+		{
+			destroySelf();
+			return;
+		}
 	}
 	
 	public void render(Graphics graphics) {	
@@ -83,7 +91,7 @@ public class Enemy extends Entity {
 		for(int i = 0; i < Game.enemiesOnMap.size(); i++) 
 		{
 			Enemy enemy = Game.enemiesOnMap.get(i);
-			if(enemy == this)// se o enemy que eu estiver percorrendo for a minha própria classe eu apenas continuo o loopiong
+			if(enemy == this)// se o enemy que eu estiver percorrendo a própria classe eu apenas continuo o loopiong
 				continue;
 			
 			Rectangle targetEnemy = new Rectangle(enemy.getX() + maskX, enemy.getY() + maskY, maskWidth, maskHeight);
@@ -93,6 +101,27 @@ public class Enemy extends Entity {
 		}
 		
 		return false;
+	}
+	
+	private void enemyCollidingWithBullet() {
+		for(int i = 0; i < Game.bulletShoots.size(); i++) {
+			Entity currentBullet = Game.bulletShoots.get(i);
+			
+			if(currentBullet instanceof BulletShoot) 
+			{
+				if(Entity.isColidding(this, currentBullet))
+				{
+					life--;
+					Game.bulletShoots.remove(i);
+					
+					return;
+				}
+			}
+		}
+	}
+	
+	private void destroySelf() {
+		Game.entities.remove(this);
 	}
 	
 	private void getSprites() {

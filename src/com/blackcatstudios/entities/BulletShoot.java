@@ -9,14 +9,14 @@ import com.blackcatstudios.world.Camera;
 
 public class BulletShoot extends Entity {
 
-	private int directionX;
-	private int directionY;
+	private double directionX;
+	private double directionY;
 	private double speed = 4;
 	private int bulletLife = 30;
 	private int currentBulletLife = 0;
 
 
-	public BulletShoot(int x, int y, int width, int height, BufferedImage sprite, int dx, int dy) {
+	public BulletShoot(int x, int y, int width, int height, BufferedImage sprite, double dx, double dy) {
 		super(x, y, width, height, sprite);
 		
 		this.directionX = dx;

@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -25,9 +26,10 @@ import com.blackcatstudios.entities.Player;
 import com.blackcatstudios.entities.Weapon;
 import com.blackcatstudios.graphics.Spritesheet;
 import com.blackcatstudios.graphics.UI;
+import com.blackcatstudios.world.Camera;
 import com.blackcatstudios.world.World;
 
-public class Game extends Canvas implements Runnable, KeyListener {
+public class Game extends Canvas implements Runnable, KeyListener, MouseListener {
 	
 	private static final long serialVersionUID = 1L;
 	public static JFrame frame;
@@ -52,6 +54,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	
 	public Game() {
 		addKeyListener(this);	
+		addMouseListener(this);	
 		setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
 		initFrame();
 		
@@ -60,9 +63,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		random = new Random();
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		entities = new ArrayList<Entity>();
+		bulletShoots = new ArrayList<BulletShoot>();
 		enemiesOnMap = new ArrayList<Enemy>();
 		lifepacksOnMap = new ArrayList<Lifepack>();
-		bulletShoots = new ArrayList<BulletShoot>();
 		bulletsOnMap = new ArrayList<Bullet>();
 		weaponsOnMap = new ArrayList<Weapon>();
 		spritesheet = new Spritesheet("/spritesheet.png");
@@ -203,7 +206,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-			player.shoot = true;
+			player.keyboardShoot = true;
 		}
 	}
 
@@ -222,6 +225,37 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		else if(e.getKeyCode() == KeyEvent.VK_S) {
 			player.down = false;
 		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		player.mouseShoot = true;
+		player.mx = e.getX() / 3;//Dividimos por pois é a escala do nosso jogo. Dessa forma eu  vou pegar a posição do mouse no meu mundo e não na minha janela
+		player.my = e.getY() / 3;
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
