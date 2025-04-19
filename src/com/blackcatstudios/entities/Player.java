@@ -23,6 +23,7 @@ public class Player extends Entity {
 	public boolean  isDamaged = false;
 	public boolean hasGun = false;
 	public double life = 100, maxLife = 100;
+	public boolean shoot = false;
 	
 	private int damageFrames = 0;
 	private boolean moved = false;
@@ -48,8 +49,9 @@ public class Player extends Entity {
 		
 		damageAnimation();
 		
-		if(life <= 0)
-			gameOver();
+		Shoot();
+		
+		gameOver();
 		
 		cameraClamp();
 	}
@@ -163,18 +165,51 @@ public class Player extends Entity {
 		Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT / 2), 0, World.HEIGHT * 16 - Game.HEIGHT);
 	}
 	
+	private void Shoot() {
+		if(shoot)
+		{
+			shoot = false;
+			if(hasGun && ammo > 0) 
+			{
+				ammo--;
+				int directionX = 0;
+				int px = 0;
+				int py = 8;
+				
+				if(dir == right_dir) 
+				{
+					px = 18;
+					py = 5;
+					directionX = 1;
+				}
+				else 
+				{
+					px = -3;
+					py = 3;
+					directionX = -1;
+				}
+				
+				BulletShoot bulletShoot = new BulletShoot(this.getX() + px, this.getY() + py, 2, 2, null, directionX, 0);
+				Game.bulletShoots.add(bulletShoot);
+			}
+		}
+	}
+	
 	private void gameOver() {
-		Game.entities = new ArrayList<Entity>();
-		Game.enemiesOnMap = new ArrayList<Enemy>();
-		Game.lifepacksOnMap = new ArrayList<Lifepack>();
-		Game.bulletsOnMap = new ArrayList<Bullet>();
-		Game.weaponsOnMap = new ArrayList<Weapon>();
-		Game.spritesheet = new Spritesheet("/spritesheet.png");
-		Game.player = new Player(0, 0, 16, 16, Game.spritesheet.getSprite(32, 0, 16, 16));
-		Game.entities.add(Game.player);
-		Game.world = new World("/map.png");
-		
-		return;
+		if(life <= 0) 
+		{
+			Game.entities = new ArrayList<Entity>();
+			Game.enemiesOnMap = new ArrayList<Enemy>();
+			Game.lifepacksOnMap = new ArrayList<Lifepack>();
+			Game.bulletsOnMap = new ArrayList<Bullet>();
+			Game.weaponsOnMap = new ArrayList<Weapon>();
+			Game.spritesheet = new Spritesheet("/spritesheet.png");
+			Game.player = new Player(0, 0, 16, 16, Game.spritesheet.getSprite(32, 0, 16, 16));
+			Game.entities.add(Game.player);
+			Game.world = new World("/map.png");
+			
+			return;
+		}
 	}
 	
 	public void render(Graphics graphics) {

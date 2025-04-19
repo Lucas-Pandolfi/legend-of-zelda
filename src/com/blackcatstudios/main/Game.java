@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.Random;
 import javax.swing.JFrame;
 
 import com.blackcatstudios.entities.Bullet;
+import com.blackcatstudios.entities.BulletShoot;
 import com.blackcatstudios.entities.Enemy;
 import com.blackcatstudios.entities.Entity;
 import com.blackcatstudios.entities.Lifepack;
@@ -45,6 +47,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static List<Lifepack> lifepacksOnMap;
 	public static List<Bullet> bulletsOnMap;
 	public static List<Weapon> weaponsOnMap;
+	public static List<BulletShoot> bulletShoots;
 	public static Spritesheet spritesheet;
 	
 	public Game() {
@@ -59,6 +62,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		entities = new ArrayList<Entity>();
 		enemiesOnMap = new ArrayList<Enemy>();
 		lifepacksOnMap = new ArrayList<Lifepack>();
+		bulletShoots = new ArrayList<BulletShoot>();
 		bulletsOnMap = new ArrayList<Bullet>();
 		weaponsOnMap = new ArrayList<Weapon>();
 		spritesheet = new Spritesheet("/spritesheet.png");
@@ -103,6 +107,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			Entity entity = entities.get(i);
 			entity.tick();
 		}
+		
+		for(int i = 0; i < bulletShoots.size(); i++) {
+			bulletShoots.get(i).tick();
+		}
 	}
 	
 	public void render() {
@@ -121,6 +129,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		for(int i = 0; i < entities.size(); i++) {
 			Entity entity = entities.get(i);
 			entity.render(graphics);
+		}
+		
+		for(int i = 0; i < bulletShoots.size(); i++) {
+			bulletShoots.get(i).render(graphics);
 		}
 		
 		ui.render(graphics);
@@ -188,6 +200,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_S) {
 			player.down = true;
+		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+			player.shoot = true;
 		}
 	}
 
