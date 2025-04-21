@@ -55,7 +55,8 @@ public class Player extends Entity {
 		
 		MouseShoot();
 		
-		gameOver();
+		//if(life <= 0)
+			//World.restartGame();
 		
 		cameraClamp();
 	}
@@ -96,6 +97,9 @@ public class Player extends Entity {
 	}
 	
 	private void getLife() {
+		if(life == 100)
+			return;
+			
 	    for(int i = 0; i < Game.lifepacksOnMap.size(); i++) {
 	        Lifepack currentLifepack = Game.lifepacksOnMap.get(i);
 	        
@@ -131,7 +135,7 @@ public class Player extends Entity {
 	        Ammo currentAmmo = Game.ammosOnMap.get(i);
 	        
 	        if(Entity.isColidding(this, currentAmmo)) {
-	            ammo += 8;
+	            ammo += 15;
 	            
 	            Game.entities.remove(currentAmmo);
 	            Game.ammosOnMap.remove(i);
@@ -226,23 +230,6 @@ public class Player extends Entity {
 				BulletShoot bulletShoot = new BulletShoot(this.getX() + px, this.getY() + py, 2, 2, null, directionX, directionY);
 				Game.bulletShoots.add(bulletShoot);
 			}
-		}
-	}
-	
-	private void gameOver() {
-		if(life <= 0) 
-		{
-			Game.entities = new ArrayList<Entity>();
-			Game.enemiesOnMap = new ArrayList<Enemy>();
-			Game.lifepacksOnMap = new ArrayList<Lifepack>();
-			Game.ammosOnMap = new ArrayList<Ammo>();
-			Game.weaponsOnMap = new ArrayList<Weapon>();
-			Game.spritesheet = new Spritesheet("/spritesheet.png");
-			Game.player = new Player(0, 0, 16, 16, Game.spritesheet.getSprite(32, 0, 16, 16));
-			Game.entities.add(Game.player);
-			Game.world = new World("/map.png");
-			
-			return;
 		}
 	}
 	

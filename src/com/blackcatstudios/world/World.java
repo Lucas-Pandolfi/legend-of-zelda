@@ -3,6 +3,7 @@ package com.blackcatstudios.world;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -10,7 +11,9 @@ import com.blackcatstudios.entities.Ammo;
 import com.blackcatstudios.entities.Enemy;
 import com.blackcatstudios.entities.Entity;
 import com.blackcatstudios.entities.Lifepack;
+import com.blackcatstudios.entities.Player;
 import com.blackcatstudios.entities.Weapon;
+import com.blackcatstudios.graphics.Spritesheet;
 import com.blackcatstudios.main.Game;
 
 public class World {
@@ -102,6 +105,20 @@ public class World {
 	        }
 	    }
 	    return true;
+	}
+	
+	public static void restartGame(String level) {
+		Game.entities = new ArrayList<Entity>();
+		Game.enemiesOnMap = new ArrayList<Enemy>();
+		Game.lifepacksOnMap = new ArrayList<Lifepack>();
+		Game.ammosOnMap = new ArrayList<Ammo>();
+		Game.weaponsOnMap = new ArrayList<Weapon>();
+		Game.spritesheet = new Spritesheet("/spritesheet.png");
+		Game.player = new Player(0, 0, 16, 16, Game.spritesheet.getSprite(32, 0, 16, 16));
+		Game.entities.add(Game.player);
+		Game.world = new World("/" + level);
+		
+		return;
 	}
 	
 	public void render(Graphics graphics) {

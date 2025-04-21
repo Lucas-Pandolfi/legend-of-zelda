@@ -133,6 +133,7 @@ public class Enemy extends Entity {
 	
 	private void destroySelf() {
 		Game.entities.remove(this);
+		Game.enemiesOnMap.remove(this);
 	}
 	
 	private void getSprites() {
