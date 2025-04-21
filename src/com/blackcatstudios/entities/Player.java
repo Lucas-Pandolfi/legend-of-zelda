@@ -19,17 +19,16 @@ public class Player extends Entity {
 	public int right_dir = 0, left_dir = 1, up_dir = 2, down_dir = 3;
 	public int dir = right_dir;
 	public int mx = 0;
-	public int my = 0;
-	
+	public int my = 0;	
 	public int ammo = 0;
-	public boolean  isDamaged = false;
-	public boolean hasGun = false;
 	public double life = 100, maxLife = 100;
+	public boolean hasGun = false;
 	public boolean keyboardShoot = false;
 	public boolean mouseShoot = false;
+	public boolean  isDamaged = false;
 	
-	private int damageFrames = 0;
 	private boolean moved = false;
+	private int damageFrames = 0;
 	private int frames = 0, maxFrames = 5, index = 0, maxIndex = 3;
 	private BufferedImage playerDamage;
 	private BufferedImage[] leftPlayer= new BufferedImage[3];

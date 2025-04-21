@@ -12,11 +12,14 @@ import com.blackcatstudios.world.World;
 public class Enemy extends Entity {
 
 	private double speed = 1;
+	private int life = 3;
 	private int maskX = 1, maskY = 1, maskWidth = 13, maskHeight = 14;
 	private int frames = 0, maxFrames = 20, index = 0, maxIndex = 2;
 	private BufferedImage[] sprites = new BufferedImage[2];
 	private static int ENEMY_SIZE = 16;
-	private int life = 3;
+	
+	private boolean isDamaged = false;
+	private int damageFrames = 0, currentDamage = 0;
 	
 	public Enemy(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, null);
@@ -50,31 +53,18 @@ public class Enemy extends Entity {
 		{
 			animation();
 			
-			if(Game.random.nextInt(100) < 10) {
-				 Game.player.life -= Game.random.nextInt(6);
-				 Game.player.isDamaged = true;
-				 
-				if(Game.player.life <= 0)
-					System.out.println("Mio pá nois parceiro!");
-			}
+			decrementPlayerLife();
 		}
-		
+				
 		enemyCollidingWithBullet();
+		
+		damageAnimation();
 		
 		if(life <= 0) 
 		{
 			destroySelf();
 			return;
 		}
-	}
-	
-	public void render(Graphics graphics) {	
-		graphics.drawImage(sprites[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
-		
-		//Usado para visualizar a colisão do inimigos
-		/*super.render(graphics);
-		graphics.setColor(Color.blue);
-		graphics.fillRect(this.getX() + maskX - Camera.x, this.getY() + maskY - Camera.y, maskWidth, maskHeight);*/
 	}
 	
 	private boolean enemyCollidingWithPlayer() {
@@ -111,11 +101,32 @@ public class Enemy extends Entity {
 			{
 				if(Entity.isColidding(this, currentBullet))
 				{
+					isDamaged = true;
 					life--;
 					Game.bulletShoots.remove(i);
 					
 					return;
 				}
+			}
+		}
+	}
+	
+	private void decrementPlayerLife() {
+		if(Game.random.nextInt(100) < 10) 
+		{
+			 Game.player.life -= Game.random.nextInt(4);
+			 Game.player.isDamaged = true;
+		}
+	}
+	
+	private void damageAnimation() {
+		if(isDamaged) 
+		{
+			damageFrames++;
+			if(damageFrames == 8)
+			{
+				damageFrames = 0;
+				isDamaged = false;
 			}
 		}
 	}
@@ -138,5 +149,17 @@ public class Enemy extends Entity {
 			if(index >= maxIndex)
 				index = 0;
 		}
+	}
+	
+	public void render(Graphics graphics) {	
+		if(!isDamaged)
+			graphics.drawImage(sprites[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+		else
+			graphics.drawImage(Entity.ENEMY_ENTITY_FEEDBACK, this.getX() - Camera.x, this.getY() - Camera.y, null);
+		
+		//Usado para visualizar a colisão do inimigos
+		/*super.render(graphics);
+		graphics.setColor(Color.blue);
+		graphics.fillRect(this.getX() + maskX - Camera.x, this.getY() + maskY - Camera.y, maskWidth, maskHeight);*/
 	}
 }
