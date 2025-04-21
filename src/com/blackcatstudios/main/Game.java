@@ -17,7 +17,7 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
-import com.blackcatstudios.entities.Bullet;
+import com.blackcatstudios.entities.Ammo;
 import com.blackcatstudios.entities.BulletShoot;
 import com.blackcatstudios.entities.Enemy;
 import com.blackcatstudios.entities.Entity;
@@ -47,7 +47,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static List<Entity> entities;
 	public static List<Enemy> enemiesOnMap;
 	public static List<Lifepack> lifepacksOnMap;
-	public static List<Bullet> bulletsOnMap;
+	public static List<Ammo> ammosOnMap;
 	public static List<Weapon> weaponsOnMap;
 	public static List<BulletShoot> bulletShoots;
 	public static Spritesheet spritesheet;
@@ -66,7 +66,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		bulletShoots = new ArrayList<BulletShoot>();
 		enemiesOnMap = new ArrayList<Enemy>();
 		lifepacksOnMap = new ArrayList<Lifepack>();
-		bulletsOnMap = new ArrayList<Bullet>();
+		ammosOnMap = new ArrayList<Ammo>();
 		weaponsOnMap = new ArrayList<Weapon>();
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));

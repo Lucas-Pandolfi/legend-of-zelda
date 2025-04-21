@@ -127,14 +127,14 @@ public class Player extends Entity {
 	}
 	
 	private void getAmmo() {
-	    for(int i = 0; i < Game.bulletsOnMap.size(); i++) {
-	        Bullet currentBullet = Game.bulletsOnMap.get(i);
+	    for(int i = 0; i < Game.ammosOnMap.size(); i++) {
+	        Ammo currentAmmo = Game.ammosOnMap.get(i);
 	        
-	        if(Entity.isColidding(this, currentBullet)) {
+	        if(Entity.isColidding(this, currentAmmo)) {
 	            ammo += 8;
 	            
-	            Game.entities.remove(currentBullet);
-	            Game.bulletsOnMap.remove(i);
+	            Game.entities.remove(currentAmmo);
+	            Game.ammosOnMap.remove(i);
 	            return;
 	        }
 	    }   
@@ -235,7 +235,7 @@ public class Player extends Entity {
 			Game.entities = new ArrayList<Entity>();
 			Game.enemiesOnMap = new ArrayList<Enemy>();
 			Game.lifepacksOnMap = new ArrayList<Lifepack>();
-			Game.bulletsOnMap = new ArrayList<Bullet>();
+			Game.ammosOnMap = new ArrayList<Ammo>();
 			Game.weaponsOnMap = new ArrayList<Weapon>();
 			Game.spritesheet = new Spritesheet("/spritesheet.png");
 			Game.player = new Player(0, 0, 16, 16, Game.spritesheet.getSprite(32, 0, 16, 16));

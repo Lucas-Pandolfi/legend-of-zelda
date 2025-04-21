@@ -1,13 +1,12 @@
 package com.blackcatstudios.world;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import com.blackcatstudios.entities.Bullet;
+import com.blackcatstudios.entities.Ammo;
 import com.blackcatstudios.entities.Enemy;
 import com.blackcatstudios.entities.Entity;
 import com.blackcatstudios.entities.Lifepack;
@@ -18,7 +17,7 @@ public class World {
 	private static int wall = 0xFFFFFFFF;
 	private static int player = 0xFF0026FF;//Este FF que vem depois do '0x' é necessário pois sem isso o Java considera a opacidade da cor.
 	private static int weapon = 0xFFFF6A00;
-	private static int bullet = 0xFFFFD800;
+	private static int ammo = 0xFFFFD800;
 	private static int lifepack = 0xFF4CFF00;
 	private static int enemy = 0xFFFF0000;
 	
@@ -61,11 +60,11 @@ public class World {
 						Game.entities.add(weapon);
 						Game.weaponsOnMap.add(weapon);
 					}
-					else if(currentPixel == bullet) 
+					else if(currentPixel == ammo) 
 					{
-						Bullet bullet = new Bullet(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.BULLET_ENTITY);
-						Game.entities.add(bullet);
-						Game.bulletsOnMap.add(bullet);
+						Ammo ammo = new Ammo(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.AMMO_ENTITY);
+						Game.entities.add(ammo);
+						Game.ammosOnMap.add(ammo);
 					}
 					else if(currentPixel == lifepack) 
 					{
