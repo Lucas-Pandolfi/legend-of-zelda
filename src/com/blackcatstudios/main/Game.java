@@ -4,7 +4,9 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -41,6 +43,9 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	private BufferedImage image;
 	private int currentLevel = 1;
 	private int maxLevel = 2;
+	private boolean showMessageGameOver = true;
+	private int framesGameOver = 0;
+	private boolean restartGame = false;
 	
 	public static UI ui;
 	public static World world;
@@ -53,6 +58,10 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static List<Weapon> weaponsOnMap;
 	public static List<BulletShoot> bulletShoots;
 	public static Spritesheet spritesheet;
+	public static String gameState = "NORMAL";
+	
+	
+	
 	
 	public Game() {
 		addKeyListener(this);	
@@ -108,16 +117,36 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	}
 	
 	public void tick() {
-		for(int i = 0; i < entities.size(); i++) {
-			Entity entity = entities.get(i);
-			entity.tick();
+		if(gameState == "NORMAL") 
+		{
+			restartGame = false;
+			
+			for(int i = 0; i < entities.size(); i++) {
+				Entity entity = entities.get(i);
+				entity.tick();
+			}
+			
+			for(int i = 0; i < bulletShoots.size(); i++) {
+				bulletShoots.get(i).tick();
+			}
+			
+			renderLevel();
 		}
-		
-		for(int i = 0; i < bulletShoots.size(); i++) {
-			bulletShoots.get(i).tick();
+		else if(gameState == "GAME_OVER") 
+		{
+			gameOverAnimation();
+			
+			if(restartGame) 
+			{
+				restartGame = false;
+				
+				gameState = "NORMAL";
+				
+				String newWorld = "level" + currentLevel + ".png";		
+
+				World.restartGame(newWorld);
+			}
 		}
-		
-		renderLevel();
 	}
 	
 	public void renderLevel() {
@@ -166,6 +195,9 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		/*graphics.setFont(new Font("arial", Font.BOLD, 17));
 		graphics.setColor(Color.white);
 		graphics.drawString("Munição: " + Player.ammo, 620, 18);*/
+		
+		if(gameState == "GAME_OVER")
+			gameOverMessage(graphics);
 		
 		bufferStrategy.show();
 	}
@@ -226,6 +258,10 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
 			player.keyboardShoot = true;
 		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+			restartGame = true;
+		}
 	}
 
 	@Override
@@ -275,5 +311,45 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	private void gameOverMessage(Graphics graphics) {
+	    Graphics2D graphics2D = (Graphics2D) graphics;
+	    
+	    graphics2D.setColor(new Color(0, 0, 0, 100));
+	    graphics2D.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE);
+	    
+	    Font gameOverFont = new Font("arial", Font.BOLD, 35);
+	    graphics.setFont(gameOverFont);
+	    graphics.setColor(Color.white);
+	    
+	    String gameOverText = "Game Over";
+	    
+	    FontMetrics fm = graphics.getFontMetrics(gameOverFont);
+	    int gameOverWidth = fm.stringWidth(gameOverText);
+	    graphics.drawString(gameOverText, (WIDTH * SCALE - gameOverWidth) / 2, (HEIGHT * SCALE) / 2);
+	    
+	    if(showMessageGameOver) 
+	    {
+	        Font restartFont = new Font("arial", Font.BOLD, 28);
+	        graphics.setFont(restartFont);
+	        
+	        String restartText = ">Pressione 'Enter' para reiniciar<";
+	        
+	        fm = graphics.getFontMetrics(restartFont);
+	        int restartWidth = fm.stringWidth(restartText);
+	        graphics.drawString(restartText, (WIDTH * SCALE - restartWidth) / 2, (HEIGHT * SCALE) / 2 + 40);
+	    }
+	}
+	private void gameOverAnimation() {
+		framesGameOver++;
+		
+		if(framesGameOver == 60) {
+			framesGameOver = 0;
+			
+			if(showMessageGameOver)
+				showMessageGameOver = false;
+			else
+				showMessageGameOver = true;
+		}
+	}
 }

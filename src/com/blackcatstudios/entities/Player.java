@@ -55,8 +55,8 @@ public class Player extends Entity {
 		
 		MouseShoot();
 		
-		//if(life <= 0)
-			//World.restartGame();
+		if(life <= 0)
+			Game.gameState = "GAME_OVER";
 		
 		cameraClamp();
 	}
