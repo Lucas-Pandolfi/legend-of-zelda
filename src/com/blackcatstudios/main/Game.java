@@ -34,12 +34,14 @@ import com.blackcatstudios.world.World;
 public class Game extends Canvas implements Runnable, KeyListener, MouseListener {
 	
 	private static final long serialVersionUID = 1L;
-	public static JFrame frame;
 	private Thread thread;
+	public static JFrame frame;
 	private boolean isRunning = true;
+	
 	public static final int WIDTH = 240;
 	public static final int HEIGHT = 160;
-	private final int SCALE = 3;
+	public static final int SCALE = 3;
+	
 	private BufferedImage image;
 	private int currentLevel = 1;
 	private int maxLevel = 2;
@@ -48,6 +50,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	private boolean restartGame = false;
 	
 	public static UI ui;
+	public static Menu menu;
 	public static World world;
 	public static Player player;
 	public static Random random;
@@ -58,10 +61,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static List<Weapon> weaponsOnMap;
 	public static List<BulletShoot> bulletShoots;
 	public static Spritesheet spritesheet;
-	public static String gameState = "NORMAL";
-	
-	
-	
+	public static GameState gameState = GameState.MENU;
 	
 	public Game() {
 		addKeyListener(this);	
@@ -83,6 +83,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
 		entities.add(player);
 		world = new World("/level1.png");
+		menu = new Menu();
 	}
 	
 	public void initFrame() {
@@ -117,7 +118,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	}
 	
 	public void tick() {
-		if(gameState == "NORMAL") 
+		if(gameState == GameState.NORMAL) 
 		{
 			restartGame = false;
 			
@@ -132,7 +133,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			
 			renderLevel();
 		}
-		else if(gameState == "GAME_OVER") 
+		else if(gameState == GameState.GAME_OVER) 
 		{
 			gameOverAnimation();
 			
@@ -140,12 +141,16 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			{
 				restartGame = false;
 				
-				gameState = "NORMAL";
+				gameState = GameState.NORMAL;
 				
 				String newWorld = "level" + currentLevel + ".png";		
 
 				World.restartGame(newWorld);
 			}
+		}
+		else if(gameState == GameState.PAUSE || gameState == GameState.MENU)
+		{
+			menu.tick();
 		}
 	}
 	
@@ -196,9 +201,11 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		graphics.setColor(Color.white);
 		graphics.drawString("Munição: " + Player.ammo, 620, 18);*/
 		
-		if(gameState == "GAME_OVER")
+		if(gameState == GameState.GAME_OVER)
 			gameOverMessage(graphics);
-		
+		else if(gameState == GameState.PAUSE || gameState == GameState.MENU)
+			menu.render(graphics);
+			
 		bufferStrategy.show();
 	}
 	
@@ -250,9 +257,15 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		
 		if(e.getKeyCode() == KeyEvent.VK_W) {
 			player.up = true;
+			
+			if(gameState == GameState.MENU  || gameState == GameState.PAUSE)
+				menu.up = true;
 		}
 		else if(e.getKeyCode() == KeyEvent.VK_S) {
 			player.down = true;
+			
+			if(gameState == GameState.MENU || gameState == GameState.PAUSE)
+				menu.down = true;
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
@@ -261,7 +274,13 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 			restartGame = true;
+			
+			if(gameState == GameState.MENU || gameState == GameState.PAUSE)
+				menu.enter = true;
 		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+			gameState = GameState.PAUSE;
 	}
 
 	@Override
@@ -340,6 +359,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	        graphics.drawString(restartText, (WIDTH * SCALE - restartWidth) / 2, (HEIGHT * SCALE) / 2 + 40);
 	    }
 	}
+	
 	private void gameOverAnimation() {
 		framesGameOver++;
 		

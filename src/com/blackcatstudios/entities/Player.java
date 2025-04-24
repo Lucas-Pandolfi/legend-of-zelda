@@ -9,6 +9,7 @@ import java.util.Random;
 import com.blackcatstudios.graphics.Spritesheet;
 import com.blackcatstudios.graphics.UI;
 import com.blackcatstudios.main.Game;
+import com.blackcatstudios.main.GameState;
 import com.blackcatstudios.world.Camera;
 import com.blackcatstudios.world.World;
 
@@ -56,7 +57,7 @@ public class Player extends Entity {
 		MouseShoot();
 		
 		if(life <= 0)
-			Game.gameState = "GAME_OVER";
+			Game.gameState = GameState.GAME_OVER;
 		
 		cameraClamp();
 	}
