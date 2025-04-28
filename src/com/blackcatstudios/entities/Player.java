@@ -10,6 +10,7 @@ import com.blackcatstudios.graphics.Spritesheet;
 import com.blackcatstudios.graphics.UI;
 import com.blackcatstudios.main.Game;
 import com.blackcatstudios.main.GameState;
+import com.blackcatstudios.main.Sound;
 import com.blackcatstudios.world.Camera;
 import com.blackcatstudios.world.World;
 
@@ -180,6 +181,7 @@ public class Player extends Entity {
 			keyboardShoot = false;
 			if(hasGun && ammo > 0) 
 			{
+				Sound.pistolShootEffect.play();
 				ammo--;
 				int directionX = 0;
 				int px = 0;
@@ -210,6 +212,7 @@ public class Player extends Entity {
 			mouseShoot = false;
 			if(hasGun && ammo > 0) 
 			{
+				Sound.pistolShootEffect.play();
 				ammo--;				
 				double angle = Math.atan2(my - (this.getY() + 8 - Camera.y), mx - (this.getX() + 8 - Camera.x));
 				double directionX = Math.cos(angle);

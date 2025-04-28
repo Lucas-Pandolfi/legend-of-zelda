@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import com.blackcatstudios.main.Game;
+import com.blackcatstudios.main.Sound;
 import com.blackcatstudios.world.Camera;
 import com.blackcatstudios.world.World;
 
@@ -51,6 +52,7 @@ public class Enemy extends Entity {
 		}
 		else 
 		{
+			Sound.playerReceivingDamageEffect.play();
 			animation();
 			
 			decrementPlayerLife();
