@@ -4,10 +4,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import com.blackcatstudios.main.Game;
 import com.blackcatstudios.main.Sound;
+import com.blackcatstudios.world.AStar;
 import com.blackcatstudios.world.Camera;
+import com.blackcatstudios.world.Node;
 import com.blackcatstudios.world.World;
 
 public class Enemy extends Entity {
@@ -22,6 +25,10 @@ public class Enemy extends Entity {
 	private boolean isDamaged = false;
 	private int damageFrames = 0, currentDamage = 0;
 	
+	private List<Node> path;
+	private int pathIndex = 0;
+	private int pathCooldown = 0;
+	
 	public Enemy(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, null);
 		
@@ -31,22 +38,34 @@ public class Enemy extends Entity {
 	public void tick() {
 		if(!enemyCollidingWithPlayer()) 
 		{
-			if(Game.random.nextInt(100) < 60) 
+			if (pathCooldown == 0 || path == null || path.isEmpty()) 
 			{
-				if((int)x < Game.player.getX() && World.collidedWithWallTile((int)(x + speed), (int)y, width, height)
-						&& !enemyCollidingAnotherEnemy((int)(x + speed), (int)y))
-			        x += speed;
-			    else if((int)x > Game.player.getX() && World.collidedWithWallTile((int)(x - speed), (int)y, width, height)
-			    		&& !enemyCollidingAnotherEnemy((int)(x - speed), (int)y))
-			        x -= speed;
-			    
-			    if((int)y < Game.player.getY() && World.collidedWithWallTile((int)x, (int)(y + speed), width, height)
-			    		&& !enemyCollidingAnotherEnemy((int)x, (int)(y + speed)))
-			        y += speed;
-			    else if((int)y > Game.player.getY() && World.collidedWithWallTile((int)x, (int)(y - speed), width, height)
-			    		&& !enemyCollidingAnotherEnemy((int)x, (int)(y - speed)))
-			        y -= speed;
-			    
+			    path = AStar.findPath((int)x, (int)y, Game.player.getX(), Game.player.getY());
+			    pathIndex = 0;
+			    pathCooldown = 30; // só atualiza a cada 30 ticks (~0.5 segundo)
+			} 
+			else
+			    pathCooldown--;
+
+			if (path != null && pathIndex < path.size()) 
+			{
+			    Node target = path.get(pathIndex);
+			    int tx = target.x * 16;
+			    int ty = target.y * 16;
+
+			    if (x < tx) 
+			    	x += speed;
+			    else if (x > tx) 
+			    	x -= speed;
+
+			    if (y < ty) 
+			    	y += speed;
+			    else if (y > ty)
+			    	y -= speed;
+
+			    if (Math.abs(x - tx) < 2 && Math.abs(y - ty) < 2)
+			        pathIndex++;
+
 			    animation();
 			}
 		}

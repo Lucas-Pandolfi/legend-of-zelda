@@ -3,16 +3,16 @@ package com.blackcatstudios.main;
 import javax.sound.sampled.*;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Sound {
     
     private byte[] audioData;
     private AudioFormat format;
-    private List<Clip> activeClips = new ArrayList<>();
+    private final Queue<Clip> activeClips = new ConcurrentLinkedQueue<>();
     private static final ExecutorService soundExecutor = Executors.newCachedThreadPool();
     
     public static final Sound musicBackground = new Sound("/music.wav");
@@ -35,7 +35,7 @@ public class Sound {
     public void play() {
         soundExecutor.submit(() -> {
             try {
-                activeClips.removeIf(clip -> !clip.isActive());
+                cleanInactiveClips();
                 
                 DataLine.Info info = new DataLine.Info(Clip.class, format);
                 Clip newClip = (Clip) AudioSystem.getLine(info);
@@ -44,11 +44,12 @@ public class Sound {
                 newClip.addLineListener(event -> {
                     if (event.getType() == LineEvent.Type.STOP) {
                         newClip.close();
+                        activeClips.remove(newClip);
                     }
                 });
                 
-                newClip.start();
                 activeClips.add(newClip);
+                newClip.start();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -69,21 +70,27 @@ public class Sound {
         });
     }
     
+    private void cleanInactiveClips() {
+        for (Clip clip : activeClips) {
+            if (clip == null || !clip.isActive()) {
+                activeClips.remove(clip);
+            }
+        }
+    }
+    
     private void stopAll() {
         soundExecutor.submit(() -> {
-            List<Clip> clipsToStop = new ArrayList<>(activeClips);
-            activeClips.clear();
-            
-            clipsToStop.forEach(clip -> {
+            for (Clip clip : activeClips) {
                 try {
-                    if (clip.isRunning()) {
+                    if (clip != null && clip.isRunning()) {
                         clip.stop();
                     }
                     clip.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            });
+            }
+            activeClips.clear();
         });
     }
     
