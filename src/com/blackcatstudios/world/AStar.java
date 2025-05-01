@@ -44,7 +44,7 @@ public class AStar {
             }
         }
 
-        return null; // nenhum caminho encontrado
+        return null;
     }
 
     private static double getDistance(int x1, int y1, int x2, int y2) {

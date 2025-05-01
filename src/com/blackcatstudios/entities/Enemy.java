@@ -1,6 +1,5 @@
 package com.blackcatstudios.entities;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -11,7 +10,6 @@ import com.blackcatstudios.main.Sound;
 import com.blackcatstudios.world.AStar;
 import com.blackcatstudios.world.Camera;
 import com.blackcatstudios.world.Node;
-import com.blackcatstudios.world.World;
 
 public class Enemy extends Entity {
 
@@ -23,7 +21,7 @@ public class Enemy extends Entity {
 	private static int ENEMY_SIZE = 16;
 	
 	private boolean isDamaged = false;
-	private int damageFrames = 0, currentDamage = 0;
+	private int damageFrames = 0;
 	
 	private List<Node> path;
 	private int pathIndex = 0;
@@ -42,7 +40,7 @@ public class Enemy extends Entity {
 			{
 			    path = AStar.findPath((int)x, (int)y, Game.player.getX(), Game.player.getY());
 			    pathIndex = 0;
-			    pathCooldown = 30; // só atualiza a cada 30 ticks (~0.5 segundo)
+			    pathCooldown = 30;
 			} 
 			else
 			    pathCooldown--;
@@ -50,20 +48,20 @@ public class Enemy extends Entity {
 			if (path != null && pathIndex < path.size()) 
 			{
 			    Node target = path.get(pathIndex);
-			    int tx = target.x * 16;
-			    int ty = target.y * 16;
+			    int targetx = target.x * 16;
+			    int targety = target.y * 16;
 
-			    if (x < tx) 
+			    if (x < targetx) 
 			    	x += speed;
-			    else if (x > tx) 
+			    else if (x > targetx) 
 			    	x -= speed;
 
-			    if (y < ty) 
+			    if (y < targety) 
 			    	y += speed;
-			    else if (y > ty)
+			    else if (y > targety)
 			    	y -= speed;
 
-			    if (Math.abs(x - tx) < 2 && Math.abs(y - ty) < 2)
+			    if (Math.abs(x - targetx) < 2 && Math.abs(y - targety) < 2)
 			        pathIndex++;
 
 			    animation();
