@@ -118,7 +118,7 @@ public class Menu {
 	    }
 	}
 	
-	public static void saveGame(String[] keys, int[] value, int encode) {
+	public static void saveGame(String[] keys, int[] values, int encode) {
 	    try {
 	        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(saveFileName));
 
@@ -126,7 +126,7 @@ public class Menu {
 	        {
 	            String currentEntity = keys[i] + ":";
 
-	            char[] currentValue = Integer.toString(value[i]).toCharArray();
+	            char[] currentValue = Integer.toString(values[i]).toCharArray();
 
 	            for (int n = 0; n < currentValue.length; n++) {
 	            	

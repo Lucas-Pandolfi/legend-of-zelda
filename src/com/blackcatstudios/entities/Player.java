@@ -181,7 +181,7 @@ public class Player extends Entity {
 			keyboardShoot = false;
 			if(hasGun && ammo > 0) 
 			{
-				//Sound.pistolShootEffect.play();
+				Sound.pistolShootEffect.play();
 				ammo--;
 				int directionX = 0;
 				int px = 0;

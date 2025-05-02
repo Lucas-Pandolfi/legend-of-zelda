@@ -64,7 +64,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static GameState gameState = GameState.MENU;
 	
 	public Game() {
-		//Sound.musicBackground.loop();
+		Sound.musicBackground.loop();
 		
 		addKeyListener(this);	
 		addMouseListener(this);	
@@ -168,7 +168,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
 			World.restartGame(newWorld);
 			Sound.stopAllSounds();
-			//Sound.musicBackground.loop();
+			Sound.musicBackground.loop();
 		}
 	}
 	
