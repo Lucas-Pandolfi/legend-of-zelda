@@ -5,6 +5,15 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import com.blackcatstudios.world.World;
 
 public class Menu {
 
@@ -12,7 +21,9 @@ public class Menu {
 	public boolean up, down, enter;
 	
 	private long lastMenuMove = 0;
+	private static int encodeLevel = 10;
 	private final long menuMoveDelay = 140;
+	private static String saveFileName = "save.txt";
 
 	public void tick() {
 	    if(Game.gameState != GameState.PAUSE && Game.gameState != GameState.MENU) {
@@ -41,25 +52,148 @@ public class Menu {
 	        }
 	    }
 	    
-	    if(enter) {
-	    	System.out.println("entrouuuuu");
+	    if(enter) 
+	    {
 	        enter = false;
 	        String selectedOption = currentMenuOptions[currentOption];
 	        
-	        if(selectedOption.equals("Continuar")) {
+	        if(selectedOption.equals("Continuar"))
 	            Game.gameState = GameState.NORMAL;
-	        } 
-	        else if(selectedOption.equals("Novo Jogo")) {
-	            Game.gameState = GameState.NORMAL;
-	            // Adicionar aqui a inicialização do novo jogo
+	        else if(selectedOption.equals("Novo Jogo"))
+	        {
+	        	deleteSave();
+	        	Game.gameState = GameState.NORMAL;
 	        }
-	        else if(selectedOption.equals("Carregar Jogo")) {
-	            // Adicioanr a Lógica para carregar jogo
+	        else if(selectedOption.equals("Salvar Jogo")) 
+	        {
+	        	int currentPlayerLife = (int) Game.player.life;
+	        	
+	        	String[] keys = {"level", "life"};
+	        	int[] values = {Game.currentLevel, currentPlayerLife};
+	        	
+	        	saveGame(keys, values, encodeLevel);
+	        	System.out.println("Salvou");
+	        }
+	        else if(selectedOption.equals("Carregar Jogo")) 
+	        {
+	            File file = new File(saveFileName);
+	            
+	            System.out.println("olha o file " + file);
+	            if(file.exists()) 
+	            {
+	            	String save = loadGame(encodeLevel);
+	            	
+	            	applySave(save);
+	            }
+	            else
+	            	System.out.println("Não existe um save!");
 	        } 
 	        else if(selectedOption.equals("Sair")) {
 	            System.exit(0);
 	        }
 	    }
+	}
+	
+	public static void applySave(String str) {
+	    String[] values = str.split("/");
+
+	    for (int i = 0; i < values.length; i++) 
+	    {
+	        if (values[i].isEmpty()) continue;
+
+	        String[] values2 = values[i].split(":");
+
+	        if (values2.length < 2) continue;
+
+	        switch (values2[0]) 
+	        {
+	            case "level":
+	                World.restartGame("level" + values2[1] + ".png");
+	                Game.gameState = GameState.NORMAL;
+	                break;
+	            case "life":
+	            	Game.player.life = Integer.parseInt(values2[1]);
+	            	break;
+	        }
+	    }
+	}
+	
+	public static void saveGame(String[] keys, int[] value, int encode) {
+	    try {
+	        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(saveFileName));
+
+	        for (int i = 0; i < keys.length; i++) 
+	        {
+	            String currentEntity = keys[i] + ":";
+
+	            char[] currentValue = Integer.toString(value[i]).toCharArray();
+
+	            for (int n = 0; n < currentValue.length; n++) {
+	            	
+	                currentValue[n] += encode;
+	                currentEntity += currentValue[n];
+	            }
+
+	            bufferedWriter.write(currentEntity);
+
+	            if (i < keys.length - 1)
+	                bufferedWriter.newLine();
+	        }
+
+	        bufferedWriter.flush();
+	        bufferedWriter.close();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	public static String loadGame(int encode) {
+		String line = "";
+		File file = new File(saveFileName);
+		
+		if(file.exists()) 
+		{
+			try {
+				String singleLine = null;
+				
+				BufferedReader bufferedReader = new BufferedReader(new FileReader(saveFileName));
+				
+				try {
+					while ((singleLine = bufferedReader.readLine()) != null) 
+					{
+					    String[] transitions = singleLine.split(":");
+
+					    if (transitions.length < 2) continue; // skip invalid lines
+
+					    char[] values = transitions[1].toCharArray();
+					    transitions[1] = "";
+
+					    for (int i = 0; i < values.length; i++) 
+					    {
+					        values[i] -= encode;
+					        transitions[1] += values[i];
+					    }
+
+					    line += transitions[0] + ":" + transitions[1] + "/";
+					}
+				}
+				catch(IOException e) {
+					e.printStackTrace();
+				}
+			}
+			catch(FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return line;
+	}
+	
+	public String[] getMenuOptions() {	
+	    if(Game.gameState == GameState.PAUSE) 
+	        return new String[]{"Continuar", "Salvar Jogo", "Carregar Jogo", "Sair"};
+	    else 
+	        return new String[]{"Novo Jogo", "Carregar Jogo", "Sair"};
 	}
 	
 	public void render(Graphics graphics) {
@@ -116,10 +250,9 @@ public class Menu {
 	    }
 	}
 	
-	public String[] getMenuOptions() {
-	    if(Game.gameState == GameState.PAUSE) 
-	        return new String[]{"Continuar", "Carregar Jogo", "Sair"};
-	    else 
-	        return new String[]{"Novo Jogo", "Carregar Jogo", "Sair"};
+	private void deleteSave() {
+		File file = new File(saveFileName);
+		
+		file.delete();
 	}
 }

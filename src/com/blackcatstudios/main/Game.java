@@ -43,17 +43,17 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static final int SCALE = 3;
 	
 	private BufferedImage image;
-	private int currentLevel = 1;
-	private int maxLevel = 2;
 	private boolean showMessageGameOver = true;
 	private int framesGameOver = 0;
 	private boolean restartGame = false;
+	private int maxLevel = 2;
 	
 	public static UI ui;
 	public static Menu menu;
 	public static World world;
 	public static Player player;
 	public static Random random;
+	public static int currentLevel = 1;
 	public static List<Entity> entities;
 	public static List<Enemy> enemiesOnMap;
 	public static List<Lifepack> lifepacksOnMap;
@@ -64,7 +64,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static GameState gameState = GameState.MENU;
 	
 	public Game() {
-		Sound.musicBackground.loop();
+		//Sound.musicBackground.loop();
 		
 		addKeyListener(this);	
 		addMouseListener(this);	
@@ -168,7 +168,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
 			World.restartGame(newWorld);
 			Sound.stopAllSounds();
-			Sound.musicBackground.loop();
+			//Sound.musicBackground.loop();
 		}
 	}
 	
@@ -235,11 +235,11 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			}
 			
 			// Lógica para saber se o game esta rodando a 60 FPS
-			if(System.currentTimeMillis() - timer >= 1000) {
+			/*if(System.currentTimeMillis() - timer >= 1000) {
 				System.out.println("FPS:" + frames);
 				frames = 0;
 				timer += 1000;
-			}
+			}*/
 		}
 		
 		stop();
