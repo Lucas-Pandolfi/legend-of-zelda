@@ -76,9 +76,6 @@ public class Entity {
 	public static boolean isColidding(Entity entity1, Entity entity2) {
 		Rectangle entityMask1 = new Rectangle(entity1.getX() + entity1.maskX, entity1.getY() + entity1.maskY, entity1.mWidth, entity1.mHeight);
 		Rectangle entityMask2 = new Rectangle(entity2.getX() + entity2.maskX, entity2.getY() + entity2.maskY, entity2.mWidth, entity2.mHeight);
-		
-		if(entityMask1.intersects(entityMask2))
-			System.out.println("colidiu");
 			
 		return entityMask1.intersects(entityMask2);
 	}

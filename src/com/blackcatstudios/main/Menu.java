@@ -205,7 +205,8 @@ public class Menu {
 	    graphics2D.setColor(new Color(0, 0, 0, 100));
 	    graphics2D.fillRect(0, 0, Game.WIDTH * Game.SCALE, Game.HEIGHT * Game.SCALE);
 	    
-	    Font menuFont = new Font("arial", Font.BOLD, 35);
+	    Font menuFont = Game.baseFont.deriveFont(Font.BOLD, 35f);
+
 	    graphics.setFont(menuFont);
 	    graphics.setColor(Color.white);
 	    
@@ -216,7 +217,7 @@ public class Menu {
 	    graphics.drawString(gameName, (Game.WIDTH * Game.SCALE - gameNameWidth) / 2, gameNameY);
 	    
 	    String[] currentMenuOptions = getMenuOptions();
-	    Font menuOptionsFont = new Font("arial", Font.BOLD, 28);
+	    Font menuOptionsFont = Game.baseFont.deriveFont(Font.BOLD, 28f);
 	    graphics.setFont(menuOptionsFont);
 	    FontMetrics fmGameOptions = graphics.getFontMetrics();
 	    

@@ -23,7 +23,8 @@ public class UI {
 		graphics.fillRect(6, 5, (int)((Game.player.life / Game.player.maxLife) * 50), 7);
 		
 		graphics.setColor(Color.white);
-		graphics.setFont(new Font("arial", Font.BOLD, 7));
+		
+		graphics.setFont(Game.baseFont.deriveFont(Font.BOLD, 7f));
 		graphics.drawString(Integer.toString((int)Game.player.life), 9, 11);
 	}
 	
@@ -34,7 +35,7 @@ public class UI {
 		graphics.drawRect(60, 4, 4, 8);
 		
 		graphics.setColor(Color.white);
-		graphics.setFont(new Font("arial", Font.BOLD, 10));
+		graphics.setFont(Game.baseFont.deriveFont(Font.BOLD, 10f));
 		graphics.drawString(Integer.toString((int)Game.player.ammo), 67, 12);
 	}
 }

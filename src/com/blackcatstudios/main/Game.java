@@ -4,6 +4,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,6 +14,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -63,6 +66,9 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static Spritesheet spritesheet;
 	public static GameState gameState = GameState.MENU;
 	
+	public static Font baseFont;
+	public InputStream streamFont = ClassLoader.getSystemClassLoader().getResourceAsStream("pixelfont.ttf");
+	
 	public Game() {
 		Sound.musicBackground.loop();
 		
@@ -86,6 +92,14 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		entities.add(player);
 		world = new World("/level1.png");
 		menu = new Menu();
+		
+		try {
+			baseFont = Font.createFont(Font.TRUETYPE_FONT, streamFont);
+		} catch (FontFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
 	}
 	
 	public void initFrame() {
