@@ -35,7 +35,14 @@ public class Sound {
     public void play() {
         soundExecutor.submit(() -> {
             try {
-                activeClips.removeIf(clip -> !clip.isActive());
+            	activeClips.removeIf(clip -> {
+                    if (clip == null) return true;
+                    try {
+                        return !clip.isActive();
+                    } catch (Exception e) {
+                        return true;
+                    }
+                });
                 
                 DataLine.Info info = new DataLine.Info(Clip.class, format);
                 Clip newClip = (Clip) AudioSystem.getLine(info);

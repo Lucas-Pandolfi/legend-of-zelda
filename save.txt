@@ -1,2 +1,2 @@
-level:;
-life:;::
+level:6
+life:655

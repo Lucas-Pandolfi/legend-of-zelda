@@ -21,7 +21,7 @@ public class Menu {
 	public boolean up, down, enter;
 	
 	private long lastMenuMove = 0;
-	private static int encodeLevel = 10;
+	private static int encodeLevel = 5;
 	private final long menuMoveDelay = 140;
 	private static String saveFileName = "save.txt";
 
@@ -64,21 +64,12 @@ public class Menu {
 	        	deleteSave();
 	        	Game.gameState = GameState.NORMAL;
 	        }
-	        else if(selectedOption.equals("Salvar Jogo")) 
-	        {
-	        	int currentPlayerLife = (int) Game.player.life;
-	        	
-	        	String[] keys = {"level", "life"};
-	        	int[] values = {Game.currentLevel, currentPlayerLife};
-	        	
-	        	saveGame(keys, values, encodeLevel);
-	        	System.out.println("Salvou");
-	        }
+	        else if(selectedOption.equals("Salvar Jogo"))
+	        	save();
 	        else if(selectedOption.equals("Carregar Jogo")) 
 	        {
 	            File file = new File(saveFileName);
 	            
-	            System.out.println("olha o file " + file);
 	            if(file.exists()) 
 	            {
 	            	String save = loadGame(encodeLevel);
@@ -112,7 +103,7 @@ public class Menu {
 	                Game.gameState = GameState.NORMAL;
 	                break;
 	            case "life":
-	            	Game.player.life = Integer.parseInt(values2[1]);
+	            	Game.player.life = (int)Integer.parseInt(values2[1]);
 	            	break;
 	        }
 	    }
@@ -127,9 +118,8 @@ public class Menu {
 	            String currentEntity = keys[i] + ":";
 
 	            char[] currentValue = Integer.toString(values[i]).toCharArray();
-
+	            
 	            for (int n = 0; n < currentValue.length; n++) {
-	            	
 	                currentValue[n] += encode;
 	                currentEntity += currentValue[n];
 	            }
@@ -249,6 +239,17 @@ public class Menu {
 	        else 
 	            graphics.drawString(option, (Game.WIDTH * Game.SCALE - optionWidth) / 2, optionY);
 	    }
+	}
+	
+	private void save() {
+		int currentPlayerLife = (int)Game.player.life;
+    	
+    	String[] keys = {"level", "life"};
+    	int[] values = {Game.currentLevel, currentPlayerLife};
+    	
+    	saveGame(keys, values, encodeLevel);
+    	
+    	Game.saveModal.show();
 	}
 	
 	private void deleteSave() {

@@ -31,6 +31,7 @@ import com.blackcatstudios.entities.Player;
 import com.blackcatstudios.entities.Weapon;
 import com.blackcatstudios.graphics.Spritesheet;
 import com.blackcatstudios.graphics.UI;
+import com.blackcatstudios.utils.Modal;
 import com.blackcatstudios.world.Camera;
 import com.blackcatstudios.world.World;
 
@@ -68,6 +69,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	
 	public static Font baseFont;
 	public InputStream streamFont = ClassLoader.getSystemClassLoader().getResourceAsStream("pixelfont.ttf");
+	
+	public static Modal saveModal = new Modal("Jogo salvo!", false, 120, 40);
 	
 	public Game() {
 		Sound.musicBackground.loop();
@@ -166,6 +169,11 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		}
 		else if(gameState == GameState.PAUSE || gameState == GameState.MENU)
 		{
+			if(saveModal.visible)
+			{
+				saveModal.tick();
+			}
+			
 			menu.tick();
 		}
 	}
@@ -187,44 +195,45 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	}
 	
 	public void render() {
-		BufferStrategy bufferStrategy = this.getBufferStrategy();	
-		if(bufferStrategy == null) {
-			this.createBufferStrategy(3); //Responsavel por otimização. Um buffer é uma área de memória temporária que armazena dados enquanto eles são transferidos de um lugar para outro
-			return;
-		}
-		
-		Graphics graphics = image.getGraphics();
-		graphics.setColor(new Color(0, 0, 0));
-		graphics.fillRect(0, 0, WIDTH, HEIGHT);
-		
-		world.render(graphics);
-		
-		for(int i = 0; i < entities.size(); i++) {
-			Entity entity = entities.get(i);
-			entity.render(graphics);
-		}
-		
-		for(int i = 0; i < bulletShoots.size(); i++) {
-			bulletShoots.get(i).render(graphics);
-		}
-		
-		ui.render(graphics);
-		
-		graphics.dispose();
-		graphics = bufferStrategy.getDrawGraphics();
-		graphics.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
-		
-		//Renderizando textos abaixo do "graphics.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);" faz com a fonte não fique pixelizada
-		/*graphics.setFont(new Font("arial", Font.BOLD, 17));
-		graphics.setColor(Color.white);
-		graphics.drawString("Munição: " + Player.ammo, 620, 18);*/
-		
-		if(gameState == GameState.GAME_OVER)
-			gameOverMessage(graphics);
-		else if(gameState == GameState.PAUSE || gameState == GameState.MENU)
-			menu.render(graphics);
-			
-		bufferStrategy.show();
+	    BufferStrategy bufferStrategy = this.getBufferStrategy();    
+	    if(bufferStrategy == null) {
+	        this.createBufferStrategy(3);
+	        return;
+	    }
+	    
+	    Graphics graphics = image.getGraphics();
+	    graphics.setColor(new Color(0, 0, 0));
+	    graphics.fillRect(0, 0, WIDTH, HEIGHT);
+	    
+	    // ==== RENDERIZAÇÃO DO JOGO (ANTES DO SCALE) ====
+	    world.render(graphics);
+	    
+	    for(int i = 0; i < entities.size(); i++) {
+	        Entity entity = entities.get(i);
+	        entity.render(graphics);
+	    }
+	    
+	    for(int i = 0; i < bulletShoots.size(); i++) {
+	        bulletShoots.get(i).render(graphics);
+	    }
+	    
+	    ui.render(graphics);
+	    
+	    graphics.dispose();
+	    
+	    // ==== APÓS ISSO, APLICA O SCALE ====
+	    graphics = bufferStrategy.getDrawGraphics();
+	    graphics.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
+	    
+	    // ==== RENDERIZAÇÃO DO MENU (DEPOIS DO SCALE, PARA FICAR POR CIMA) ====
+	    if(gameState == GameState.GAME_OVER)
+	        gameOverMessage(graphics);
+	    else if(gameState == GameState.PAUSE || gameState == GameState.MENU)
+	        menu.render(graphics);  // Menu continua por cima de tudo
+	        
+	    Game.saveModal.render(graphics);
+	    
+	    bufferStrategy.show();
 	}
 	
 	public void run() {
@@ -297,8 +306,11 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 				menu.enter = true;
 		}
 		
-		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
-			gameState = GameState.PAUSE;
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) 
+		{
+			if(gameState != GameState.MENU)
+				gameState = GameState.PAUSE;
+		}
 	}
 
 	@Override
