@@ -70,7 +70,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static Font baseFont;
 	public InputStream streamFont = ClassLoader.getSystemClassLoader().getResourceAsStream("pixelfont.ttf");
 	
-	public static Modal saveModal = new Modal("Jogo salvo!", false, 120, 40);
+	public static Modal saveModal = new Modal("Jogo salvo!", true, 120, 40);
 	
 	public Game() {
 		Sound.musicBackground.loop();
