@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -35,7 +36,7 @@ import com.blackcatstudios.utils.Modal;
 import com.blackcatstudios.world.Camera;
 import com.blackcatstudios.world.World;
 
-public class Game extends Canvas implements Runnable, KeyListener, MouseListener {
+public class Game extends Canvas implements Runnable, KeyListener, MouseListener, MouseMotionListener {
 	
 	private static final long serialVersionUID = 1L;
 	private Thread thread;
@@ -66,17 +67,17 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static List<BulletShoot> bulletShoots;
 	public static Spritesheet spritesheet;
 	public static GameState gameState = GameState.MENU;
-	
 	public static Font baseFont;
-	public InputStream streamFont = ClassLoader.getSystemClassLoader().getResourceAsStream("pixelfont.ttf");
-	
+	public InputStream streamFont = ClassLoader.getSystemClassLoader().getResourceAsStream("pixelfont.ttf");	
 	public static Modal saveModal = new Modal("Jogo salvo!", true, 120, 40);
+	public int mouseX, mouseY;
 	
 	public Game() {
 		Sound.musicBackground.loop();
 		
 		addKeyListener(this);	
 		addMouseListener(this);	
+		addMouseMotionListener(this);
 		setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
 		initFrame();
 		
@@ -229,9 +230,11 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	    if(gameState == GameState.GAME_OVER)
 	        gameOverMessage(graphics);
 	    else if(gameState == GameState.PAUSE || gameState == GameState.MENU)
-	        menu.render(graphics);  // Menu continua por cima de tudo
-	        
+	        menu.render(graphics);  // Menu continua por cima de tudo   
+	    
 	    Game.saveModal.render(graphics);
+	    
+	    //rotateObjectFollowingMousePosition(graphics);
 	    
 	    bufferStrategy.show();
 	}
@@ -361,6 +364,18 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		
 	}
 	
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		this.mouseX = e.getX();
+		this.mouseY = e.getY();
+	}
+	
 	private void gameOverMessage(Graphics graphics) {
 	    Graphics2D graphics2D = (Graphics2D) graphics;
 	    
@@ -401,5 +416,16 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			else
 				showMessageGameOver = true;
 		}
+	}
+	
+	//TODO: Criar uma classe no package utils e passar mais parametros como, spritesheet que vc quer renderizar, width e height da sprite
+	private void rotateObjectFollowingMousePosition(Graphics graphics) {
+		Graphics2D graphics2D = (Graphics2D) graphics;
+		
+		double angleMouse = Math.atan2(mouseY - 200 + 25, mouseX - 200 + 25);
+		
+		graphics2D.rotate(angleMouse, 200 + 25, 200 + 25);//o 25 é usado para fazer com que o objeto rotacione no mesmo local de origem, este 25 é a metade do width e height do objeto que você quer rotacionar
+		graphics.setColor(Color.BLUE);
+	    graphics.fillRect(200, 200, 50, 50);
 	}
 }
