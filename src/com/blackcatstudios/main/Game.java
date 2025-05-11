@@ -69,11 +69,12 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static GameState gameState = GameState.MENU;
 	public static Font baseFont;
 	public InputStream streamFont = ClassLoader.getSystemClassLoader().getResourceAsStream("pixelfont.ttf");	
-	public static Modal saveModal = new Modal("Jogo salvo!", true, 120, 40);
+	public static Modal saveModal = new Modal("Jogo salvo!", true, 750, 120, 40);
+	public static Modal noSaveGameFoundModal = new Modal("Nenhum save encontrado!", true, 850, 150, 40);
 	public int mouseX, mouseY;
 	
 	public Game() {
-		Sound.musicBackground.loop();
+		//Sound.musicBackground.loop();
 		
 		addKeyListener(this);	
 		addMouseListener(this);	
@@ -171,9 +172,9 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		else if(gameState == GameState.PAUSE || gameState == GameState.MENU)
 		{
 			if(saveModal.visible)
-			{
 				saveModal.tick();
-			}
+			else if(noSaveGameFoundModal.visible)
+				noSaveGameFoundModal.tick();
 			
 			menu.tick();
 		}
@@ -191,7 +192,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 
 			World.restartGame(newWorld);
 			Sound.stopAllSounds();
-			Sound.musicBackground.loop();
+			//Sound.musicBackground.loop();
 		}
 	}
 	
@@ -234,6 +235,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	    
 	    Game.saveModal.render(graphics);
 	    
+	    Game.noSaveGameFoundModal.render(graphics);
 	    //rotateObjectFollowingMousePosition(graphics);
 	    
 	    bufferStrategy.show();
@@ -418,7 +420,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		}
 	}
 	
-	//TODO: Criar uma classe no package utils e passar mais parametros como, spritesheet que vc quer renderizar, width e height da sprite
+	//TODO: Criar uma classe no package utils e passar mais parametros como a sprite que vc quer renderizar, width e height da sprite
 	private void rotateObjectFollowingMousePosition(Graphics graphics) {
 		Graphics2D graphics2D = (Graphics2D) graphics;
 		

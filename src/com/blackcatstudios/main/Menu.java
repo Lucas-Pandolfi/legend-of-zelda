@@ -77,7 +77,7 @@ public class Menu {
 	            	applySave(save);
 	            }
 	            else
-	            	System.out.println("Não existe um save!");
+	            	Game.noSaveGameFoundModal.show();
 	        } 
 	        else if(selectedOption.equals("Sair")) {
 	            System.exit(0);

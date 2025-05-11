@@ -29,34 +29,39 @@ public class Enemy extends Entity {
 	}
 	
 	public void tick() {
-		if(!enemyCollidingWithPlayer()) 
+		if(this.calculateDistace(this.getX(), this.getY(), Game.player.getX(), Game.player.getY()) < 100) 
 		{
-			if(Game.random.nextInt(100) < 60) 
+			if(!enemyCollidingWithPlayer()) 
 			{
-				if((int)x < Game.player.getX() && World.collidedWithWallTile((int)(x + speed), (int)y, width, height)
-						&& !enemyCollidingAnotherEnemy((int)(x + speed), (int)y))
-			        x += speed;
-			    else if((int)x > Game.player.getX() && World.collidedWithWallTile((int)(x - speed), (int)y, width, height)
-			    		&& !enemyCollidingAnotherEnemy((int)(x - speed), (int)y))
-			        x -= speed;
-			    
-			    if((int)y < Game.player.getY() && World.collidedWithWallTile((int)x, (int)(y + speed), width, height)
-			    		&& !enemyCollidingAnotherEnemy((int)x, (int)(y + speed)))
-			        y += speed;
-			    else if((int)y > Game.player.getY() && World.collidedWithWallTile((int)x, (int)(y - speed), width, height)
-			    		&& !enemyCollidingAnotherEnemy((int)x, (int)(y - speed)))
-			        y -= speed;
-			    
-			    animation();
+				if(Game.random.nextInt(100) < 60) 
+				{
+					if((int)x < Game.player.getX() && World.collidedWithWallTile((int)(x + speed), (int)y, width, height)
+							&& !enemyCollidingAnotherEnemy((int)(x + speed), (int)y))
+				        x += speed;
+				    else if((int)x > Game.player.getX() && World.collidedWithWallTile((int)(x - speed), (int)y, width, height)
+				    		&& !enemyCollidingAnotherEnemy((int)(x - speed), (int)y))
+				        x -= speed;
+				    
+				    if((int)y < Game.player.getY() && World.collidedWithWallTile((int)x, (int)(y + speed), width, height)
+				    		&& !enemyCollidingAnotherEnemy((int)x, (int)(y + speed)))
+				        y += speed;
+				    else if((int)y > Game.player.getY() && World.collidedWithWallTile((int)x, (int)(y - speed), width, height)
+				    		&& !enemyCollidingAnotherEnemy((int)x, (int)(y - speed)))
+				        y -= speed;
+				    
+				    animation();
+				}
+			}
+			else 
+			{
+				Sound.playerReceivingDamageEffect.play();
+				animation();
+				
+				decrementPlayerLife();
 			}
 		}
-		else 
-		{
-			Sound.playerReceivingDamageEffect.play();
+		else
 			animation();
-			
-			decrementPlayerLife();
-		}
 				
 		enemyCollidingWithBullet();
 		

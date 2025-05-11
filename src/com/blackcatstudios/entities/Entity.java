@@ -73,6 +73,10 @@ public class Entity {
 		
 	}
 	
+	public double calculateDistace(int x1, int y1, int x2, int y2) {
+		return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2)* (y1 - y2));
+	}
+	
 	public static boolean isColidding(Entity entity1, Entity entity2) {
 		Rectangle entityMask1 = new Rectangle(entity1.getX() + entity1.maskX, entity1.getY() + entity1.maskY, entity1.mWidth, entity1.mHeight);
 		Rectangle entityMask2 = new Rectangle(entity2.getX() + entity2.maskX, entity2.getY() + entity2.maskY, entity2.mWidth, entity2.mHeight);

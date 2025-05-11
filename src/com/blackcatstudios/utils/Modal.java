@@ -12,17 +12,19 @@ import java.awt.geom.RoundRectangle2D;
 import com.blackcatstudios.main.Game;
 
 public class Modal {
-	public static boolean visible;
-	public static boolean automaticHide;
+	public boolean visible;
+	public boolean automaticHide;
+	public long durationTime;
 	
+	private long showTime;
     private String message;
     private int x, y, width, height;
-    private long showTime;
     private final int cornerRadius = 10; // Reduzido para sua tela pequena
     private final int borderThickness = 2;
 
-    public Modal(String message, boolean automaticHide, int width, int height) {
+    public Modal(String message, boolean automaticHide, long durationTime, int width, int height) {
         this.message = message;
+        this.durationTime = durationTime;
         this.automaticHide = automaticHide;
         this.width = width;
         this.height = height;
@@ -32,15 +34,15 @@ public class Modal {
 
     public void show() {
         this.visible = true;
-        this.showTime = System.currentTimeMillis();
+        this.showTime = System.currentTimeMillis();  
     }
 
     public void tick() {
-        if (!visible) return;
+        if (!visible) 
+        	return;
         
-        if (automaticHide && System.currentTimeMillis() - showTime >= 750) {
+        if (automaticHide && System.currentTimeMillis() - this.showTime >= this.durationTime)
             hide();
-        }
     }
 
     public void hide() {
