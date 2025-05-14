@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.awt.image.DataBufferInt;
+
 
 import javax.swing.JFrame;
 
@@ -72,6 +74,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static Modal saveModal = new Modal("Jogo salvo!", true, 750, 120, 40);
 	public static Modal noSaveGameFoundModal = new Modal("Nenhum save encontrado!", true, 850, 150, 40);
 	public int mouseX, mouseY;
+	//public int[] pixels;
 	
 	public Game() {
 		//Sound.musicBackground.loop();
@@ -86,6 +89,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		ui = new UI();
 		random = new Random();
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		//pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 		entities = new ArrayList<Entity>();
 		bulletShoots = new ArrayList<BulletShoot>();
 		enemiesOnMap = new ArrayList<Enemy>();
@@ -196,6 +200,23 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		}
 	}
 	
+	//Método resposnavel por manipular pixel por pixeldo meu mapa
+	/*public void drawRectangleExample(int xOff, int yOff) {
+		for(int xx = 0; xx < 32; xx++) 
+		{
+			for(int yy = 0; yy < 32; yy++) 
+			{
+				int xOffValue = xx + xOff;
+				int yOffValue = yy + yOff;
+				
+				if(xOffValue < 0 || yOffValue < 0 || xOffValue >= WIDTH || yOffValue >= HEIGHT)
+					continue;
+				
+				pixels[xOffValue + (yOffValue * WIDTH)] = 0xff0000;
+			}
+		}
+	}*/
+	
 	public void render() {
 	    BufferStrategy bufferStrategy = this.getBufferStrategy();    
 	    if(bufferStrategy == null) {
@@ -225,6 +246,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	    
 	    // ==== APÓS ISSO, APLICA O SCALE ====
 	    graphics = bufferStrategy.getDrawGraphics();
+	    
 	    graphics.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
 	    
 	    // ==== RENDERIZAÇÃO DO MENU (DEPOIS DO SCALE, PARA FICAR POR CIMA) ====
