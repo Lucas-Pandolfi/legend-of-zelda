@@ -74,7 +74,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static Modal saveModal = new Modal("Jogo salvo!", true, 750, 120, 40);
 	public static Modal noSaveGameFoundModal = new Modal("Nenhum save encontrado!", true, 850, 150, 40);
 	public int mouseX, mouseY;
-	//public int[] pixels;
+	public static int[] pixels;
 	
 	public Game() {
 		//Sound.musicBackground.loop();
@@ -101,6 +101,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		entities.add(player);
 		world = new World("/level1.png");
 		menu = new Menu();
+		
+		//world.getLightMap();
 		
 		try {
 			baseFont = Font.createFont(Font.TRUETYPE_FONT, streamFont);
@@ -239,6 +241,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	    for(int i = 0; i < bulletShoots.size(); i++) {
 	        bulletShoots.get(i).render(graphics);
 	    }
+	    
+	    //world.applyLightMap();
 	    
 	    ui.render(graphics);
 	    

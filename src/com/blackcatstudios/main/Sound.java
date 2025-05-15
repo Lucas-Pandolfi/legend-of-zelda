@@ -5,6 +5,7 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -12,7 +13,7 @@ public class Sound {
     
     private byte[] audioData;
     private AudioFormat format;
-    private List<Clip> activeClips = new ArrayList<>();
+    private final List<Clip> activeClips = new CopyOnWriteArrayList<>();
     private static final ExecutorService soundExecutor = Executors.newCachedThreadPool();
     
     public static final Sound musicBackground = new Sound("/music.wav");

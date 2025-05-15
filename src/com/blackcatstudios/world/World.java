@@ -28,6 +28,9 @@ public class World {
 	public static int WIDTH, HEIGHT;
 	public static final int TILE_SIZE = 16;
 	public static int margin = 2;
+	
+	public BufferedImage lightMap;
+	public int[] lightMapPixels;
 
 	public World(String path) {
 		try {
@@ -118,7 +121,32 @@ public class World {
 		Game.entities.add(Game.player);
 		Game.world = new World("/" + level);
 		
+		//Game.world.getLightMap();
+		
 		return;
+	}
+	
+	public void getLightMap() {
+		try {
+			lightMap = ImageIO.read(getClass().getResource("/lightmap.png"));
+			
+			lightMapPixels = new int [lightMap.getWidth() * lightMap.getHeight()];
+			
+			lightMap.getRGB(0, 0, lightMap.getWidth(), lightMap.getHeight(), lightMapPixels, 0, lightMap.getWidth());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void applyLightMap() {
+		for(int xx = 0; xx < Game.WIDTH; xx++) 
+		{
+			for(int yy = 0; yy < Game.HEIGHT; yy++) 
+			{
+				if(lightMapPixels != null && lightMapPixels[xx + (yy * Game.WIDTH)] == 0xffffffff)
+					Game.pixels[xx + (yy * Game.WIDTH)] = 0;
+			}
+		}
 	}
 	
 	public void render(Graphics graphics) {
