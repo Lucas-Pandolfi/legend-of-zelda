@@ -7,14 +7,15 @@ import java.awt.image.BufferedImage;
 
 import com.blackcatstudios.main.Game;
 import com.blackcatstudios.main.Sound;
+import com.blackcatstudios.world.AStar;
 import com.blackcatstudios.world.Camera;
+import com.blackcatstudios.world.Vector2i;
 import com.blackcatstudios.world.World;
 
 public class Enemy extends Entity {
 
 	private double speed = 1;
 	private int life = 3;
-	private int maskX = 1, maskY = 1, maskWidth = 13, maskHeight = 14;
 	private int frames = 0, maxFrames = 20, index = 0, maxIndex = 2;
 	private BufferedImage[] sprites = new BufferedImage[2];
 	private static int ENEMY_SIZE = 16;
@@ -29,7 +30,7 @@ public class Enemy extends Entity {
 	}
 	
 	public void tick() {
-		if(this.calculateDistace(this.getX(), this.getY(), Game.player.getX(), Game.player.getY()) < 100) 
+		/*if(this.calculateDistace(this.getX(), this.getY(), Game.player.getX(), Game.player.getY()) < 100) 
 		{
 			if(!enemyCollidingWithPlayer()) 
 			{
@@ -61,8 +62,30 @@ public class Enemy extends Entity {
 			}
 		}
 		else
-			animation();
+			animation();*/
+		
+		if(this.calculateDistace(this.getX(), this.getY(), Game.player.getX(), Game.player.getY()) < 100) 
+		{
+			if(paths == null || paths.size() == 0) 
+			{
+				Vector2i start = new Vector2i((int)(x / 16), (int)(y / 16));
+				Vector2i end = new Vector2i((int)(Game.player.x / 16), (int)(Game.player.y / 16));
 				
+				paths = AStar.findPath(Game.world, start, end);
+			}
+			followPath(paths);
+			
+			if(enemyCollidingWithPlayer()) 
+			{
+				//Sound.playerReceivingDamageEffect.play();
+				animation();
+				
+				decrementPlayerLife();
+			}
+		}
+		
+		animation();
+		
 		enemyCollidingWithBullet();
 		
 		damageAnimation();
@@ -75,29 +98,11 @@ public class Enemy extends Entity {
 	}
 	
 	private boolean enemyCollidingWithPlayer() {
-		Rectangle currentEnemy = new Rectangle(this.getX() + maskX, this.getY() + maskY, maskWidth, maskHeight);
+		Rectangle currentEnemy = new Rectangle(this.getX() + maskX, this.getY() + maskY, mWidth, mHeight);
 		
 		Rectangle player = new Rectangle(Game.player.getX(), Game.player.getY(), 16,  16);
 		
 		return currentEnemy.intersects(player);
-	}
-	
-	private boolean enemyCollidingAnotherEnemy(int xNext, int yNext) {
-		Rectangle currentEnemy = new Rectangle(xNext + maskX, yNext + maskY, maskWidth, maskHeight);
-		
-		for(int i = 0; i < Game.enemiesOnMap.size(); i++) 
-		{
-			Enemy enemy = Game.enemiesOnMap.get(i);
-			if(enemy == this)// se o enemy que eu estiver percorrendo a própria classe eu apenas continuo o loopiong
-				continue;
-			
-			Rectangle targetEnemy = new Rectangle(enemy.getX() + maskX, enemy.getY() + maskY, maskWidth, maskHeight);
-			
-			if(currentEnemy.intersects(targetEnemy))
-				return true;
-		}
-		
-		return false;
 	}
 	
 	private void enemyCollidingWithBullet() {

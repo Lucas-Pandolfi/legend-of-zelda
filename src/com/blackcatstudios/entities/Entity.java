@@ -4,19 +4,22 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import com.blackcatstudios.main.Game;
 import com.blackcatstudios.world.Camera;
+import com.blackcatstudios.world.Node;
+import com.blackcatstudios.world.Vector2i;
 
-public class Entity {
-	private int maskX, maskY, mWidth, mHeight;
-	
+public class Entity {	
 	protected double x;
 	protected double y;
 	protected int width;
 	protected int height;
 	protected BufferedImage sprite;
+	protected List<Node> paths;
 	
+	public int maskX, maskY, mWidth, mHeight;
 	public static BufferedImage LIFEPACK_ENTITY = Game.spritesheet.getSprite(80, 0, 16, 16);
 	public static BufferedImage WEAPON_ENTITY = Game.spritesheet.getSprite(96, 0, 16, 16);
 	public static BufferedImage AMMO_ENTITY = Game.spritesheet.getSprite(128, 0, 16, 16);
@@ -75,6 +78,47 @@ public class Entity {
 	
 	public double calculateDistace(int x1, int y1, int x2, int y2) {
 		return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2)* (y1 - y2));
+	}
+	
+	public void followPath(List<Node> paths) {
+		if(paths != null) 
+		{
+			if(paths.size() > 0) 
+			{
+				Vector2i target = paths.get(paths.size() - 1).tile;
+				
+				if(x < target.x * 16)
+					x++;
+				else if(x > target.x * 16)
+					x--;
+				
+				if(y < target.y * 16)
+					y++;
+				else if(y > target.y * 16)
+					y--;
+				
+				if(x == target.x * 16 && y == target.y * 16)
+					paths.remove(paths.size() - 1);
+			}
+		}
+	}
+	
+	private boolean enemyCollidingAnotherEnemy(int xNext, int yNext) {
+		Rectangle currentEnemy = new Rectangle(xNext + maskX, yNext + maskY, mWidth, mHeight);
+		
+		for(int i = 0; i < Game.enemiesOnMap.size(); i++) 
+		{
+			Enemy enemy = Game.enemiesOnMap.get(i);
+			if(enemy == this)// se o enemy que eu estiver percorrendo a própria classe eu apenas continuo o loopiong
+				continue;
+			
+			Rectangle targetEnemy = new Rectangle(enemy.getX() + maskX, enemy.getY() + maskY, mWidth, mHeight);
+			
+			if(currentEnemy.intersects(targetEnemy))
+				return true;
+		}
+		
+		return false;
 	}
 	
 	public static boolean isColidding(Entity entity1, Entity entity2) {

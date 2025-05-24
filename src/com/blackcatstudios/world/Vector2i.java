@@ -6,7 +6,7 @@ public class Vector2i {
 	
 	public Vector2i(int x, int y) {
 		this.x = x;
-		this.x = y;
+		this.y = y;
 	}
 	
 	public boolean equals(Object object) {
