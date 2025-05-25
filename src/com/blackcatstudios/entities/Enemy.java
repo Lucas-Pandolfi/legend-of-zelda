@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import com.blackcatstudios.main.Game;
 import com.blackcatstudios.main.Sound;
@@ -43,7 +44,8 @@ public class Enemy extends Entity {
 	            target = currentPlayerPos;  // Atualiza o target
 	        }
 	        
-			followPath(paths);
+	        if(new Random().nextInt(100) < 60)
+	        	followPath(paths);
 			
 			if(enemyCollidingWithPlayer()) 
 			{

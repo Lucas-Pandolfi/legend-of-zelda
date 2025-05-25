@@ -87,14 +87,14 @@ public class Entity {
 			{
 				Vector2i target = paths.get(paths.size() - 1).tile;
 				
-				if(x < target.x * 16)
+				if(x < target.x * 16 && !enemyCollidingAnotherEnemy(this.getX() + 1, this.getY()))
 					x++;
-				else if(x > target.x * 16)
+				else if(x > target.x * 16 && !enemyCollidingAnotherEnemy(this.getX() - 1, this.getY()))
 					x--;
 				
-				if(y < target.y * 16)
+				if(y < target.y * 16 && !enemyCollidingAnotherEnemy(this.getX(), this.getY() + 1))
 					y++;
-				else if(y > target.y * 16)
+				else if(y > target.y * 16 && !enemyCollidingAnotherEnemy(this.getX(), this.getY() - 1))
 					y--;
 				
 				if(x == target.x * 16 && y == target.y * 16)
@@ -109,7 +109,7 @@ public class Entity {
 		for(int i = 0; i < Game.enemiesOnMap.size(); i++) 
 		{
 			Enemy enemy = Game.enemiesOnMap.get(i);
-			if(enemy == this)// se o enemy que eu estiver percorrendo a própria classe eu apenas continuo o loopiong
+			if(enemy == this)// se o enemy estiver percorrendo a própria classe apenas continua o loopiong
 				continue;
 			
 			Rectangle targetEnemy = new Rectangle(enemy.getX() + maskX, enemy.getY() + maskY, mWidth, mHeight);
