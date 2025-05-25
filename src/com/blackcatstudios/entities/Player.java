@@ -106,7 +106,7 @@ public class Player extends Entity {
 	        Lifepack currentLifepack = Game.lifepacksOnMap.get(i);
 	        
 	        if(Entity.isColidding(this, currentLifepack)) {
-	            life += 8;
+	            life += 25;
 	            
 	            if(life >= 100)
 	                life = 100;

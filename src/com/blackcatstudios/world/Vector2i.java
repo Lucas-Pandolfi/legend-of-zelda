@@ -9,12 +9,14 @@ public class Vector2i {
 		this.y = y;
 	}
 	
-	public boolean equals(Object object) {
-		Vector2i vec = (Vector2i) object;
-		
-		if(vec.x == this.x && vec.y == this.y) 
-			return true;
-		
-		return false;
+	@Override
+	public boolean equals(Object obj) 
+	{
+	    if (!(obj instanceof Vector2i)) 
+	    	return false;
+	    
+	    Vector2i vec = (Vector2i) obj;
+	    
+	    return this.x == vec.x && this.y == vec.y;
 	}
 }

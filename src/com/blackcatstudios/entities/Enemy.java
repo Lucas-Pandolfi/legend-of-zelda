@@ -14,12 +14,13 @@ import com.blackcatstudios.world.World;
 
 public class Enemy extends Entity {
 
-	private double speed = 1;
+	private double speed = 0.4;
 	private int life = 3;
 	private int frames = 0, maxFrames = 20, index = 0, maxIndex = 2;
 	private BufferedImage[] sprites = new BufferedImage[2];
 	private static int ENEMY_SIZE = 16;
 	
+	private Vector2i target;
 	private boolean isDamaged = false;
 	private int damageFrames = 0, currentDamage = 0;
 	
@@ -30,49 +31,18 @@ public class Enemy extends Entity {
 	}
 	
 	public void tick() {
-		/*if(this.calculateDistace(this.getX(), this.getY(), Game.player.getX(), Game.player.getY()) < 100) 
-		{
-			if(!enemyCollidingWithPlayer()) 
-			{
-				if(Game.random.nextInt(100) < 60) 
-				{
-					if((int)x < Game.player.getX() && World.collidedWithWallTile((int)(x + speed), (int)y, width, height)
-							&& !enemyCollidingAnotherEnemy((int)(x + speed), (int)y))
-				        x += speed;
-				    else if((int)x > Game.player.getX() && World.collidedWithWallTile((int)(x - speed), (int)y, width, height)
-				    		&& !enemyCollidingAnotherEnemy((int)(x - speed), (int)y))
-				        x -= speed;
-				    
-				    if((int)y < Game.player.getY() && World.collidedWithWallTile((int)x, (int)(y + speed), width, height)
-				    		&& !enemyCollidingAnotherEnemy((int)x, (int)(y + speed)))
-				        y += speed;
-				    else if((int)y > Game.player.getY() && World.collidedWithWallTile((int)x, (int)(y - speed), width, height)
-				    		&& !enemyCollidingAnotherEnemy((int)x, (int)(y - speed)))
-				        y -= speed;
-				    
-				    animation();
-				}
-			}
-			else 
-			{
-				Sound.playerReceivingDamageEffect.play();
-				animation();
-				
-				decrementPlayerLife();
-			}
-		}
-		else
-			animation();*/
-		
 		if(this.calculateDistace(this.getX(), this.getY(), Game.player.getX(), Game.player.getY()) < 100) 
 		{
-			if(paths == null || paths.size() == 0) 
-			{
-				Vector2i start = new Vector2i((int)(x / 16), (int)(y / 16));
-				Vector2i end = new Vector2i((int)(Game.player.x / 16), (int)(Game.player.y / 16));
-				
-				paths = AStar.findPath(Game.world, start, end);
-			}
+			Vector2i currentPlayerPos = new Vector2i((int)(Game.player.x / 16), (int)(Game.player.y / 16));
+	        Vector2i currentEnemyPos = new Vector2i((int)(x / 16), (int)(y / 16));
+	        
+	        if (paths == null || paths.size() == 0 || !currentPlayerPos.equals(target)) 
+	        {
+	            // Player mudou de posição ou caminho terminou: recalcula
+	            paths = AStar.findPath(Game.world, currentEnemyPos, currentPlayerPos);
+	            target = currentPlayerPos;  // Atualiza o target
+	        }
+	        
 			followPath(paths);
 			
 			if(enemyCollidingWithPlayer()) 
@@ -82,6 +52,8 @@ public class Enemy extends Entity {
 				
 				decrementPlayerLife();
 			}
+			
+			animation();
 		}
 		
 		animation();
@@ -126,7 +98,7 @@ public class Enemy extends Entity {
 	private void decrementPlayerLife() {
 		if(Game.random.nextInt(100) < 10) 
 		{
-			 Game.player.life -= Game.random.nextInt(4);
+			 Game.player.life -= Game.random.nextInt(3);
 			 Game.player.isDamaged = true;
 		}
 	}
