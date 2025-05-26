@@ -32,6 +32,8 @@ public class Enemy extends Entity {
 	}
 	
 	public void tick() {
+		depth = 0;
+		
 		if(this.calculateDistace(this.getX(), this.getY(), Game.player.getX(), Game.player.getY()) < 100) 
 		{
 			Vector2i currentPlayerPos = new Vector2i((int)(Game.player.x / 16), (int)(Game.player.y / 16));
@@ -44,7 +46,7 @@ public class Enemy extends Entity {
 	            target = currentPlayerPos;  // Atualiza o target
 	        }
 	        
-	        if(new Random().nextInt(100) < 60)
+	        if(new Random().nextInt(100) < 70)
 	        	followPath(paths);
 			
 			if(enemyCollidingWithPlayer()) 

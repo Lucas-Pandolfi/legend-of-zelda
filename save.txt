@@ -1,2 +1,2 @@
-level:7
+level:6
 life:655

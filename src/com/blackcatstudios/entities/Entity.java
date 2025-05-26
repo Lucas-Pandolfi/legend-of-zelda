@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Comparator;
 import java.util.List;
 
 import com.blackcatstudios.main.Game;
@@ -19,6 +20,7 @@ public class Entity {
 	protected BufferedImage sprite;
 	protected List<Node> paths;
 	
+	public int depth;
 	public int maskX, maskY, mWidth, mHeight;
 	public static BufferedImage LIFEPACK_ENTITY = Game.spritesheet.getSprite(80, 0, 16, 16);
 	public static BufferedImage WEAPON_ENTITY = Game.spritesheet.getSprite(96, 0, 16, 16);
@@ -75,6 +77,19 @@ public class Entity {
 	public void tick() {
 		
 	}
+	
+	public static Comparator<Entity> entitySorter = new Comparator<Entity>() {
+		@Override
+		public int compare(Entity e0, Entity e1) {
+			if(e1.depth < e0.depth)
+				return +1;
+			
+			if(e1.depth > e0.depth)
+				return -1;
+			
+			return 0;
+		}
+	};
 	
 	public double calculateDistace(int x1, int y1, int x2, int y2) {
 		return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2)* (y1 - y2));
