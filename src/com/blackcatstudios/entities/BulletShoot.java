@@ -27,12 +27,25 @@ public class BulletShoot extends Entity {
 		x += directionX * speed;
 		y += directionY * speed;
 		
-		currentBulletLife++;
-		if(currentBulletLife == bulletLife)
-		{
-			Game.bulletShoots.remove(this);
-			return;
-		}
+		if (Game.world.isSolidTile(this.getX(), this.getY())) {
+	        Game.bulletShoots.remove(this);
+	        return;
+	    }
+
+	    for(int i = 0; i < Game.enemiesOnMap.size(); i++) {
+	        Enemy enemy = Game.enemiesOnMap.get(i);
+	        if(Entity.isColidding(this, enemy)) {
+	            enemy.takeDamage();
+	            Game.bulletShoots.remove(this);
+	            return;
+	        }
+	    }
+
+	    currentBulletLife++;
+	    if(currentBulletLife >= bulletLife) {
+	        Game.bulletShoots.remove(this);
+	        return;
+	    }
 	}
 	
 	public void render(Graphics graphics) {

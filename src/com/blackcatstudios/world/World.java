@@ -2,8 +2,11 @@ package com.blackcatstudios.world;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -23,11 +26,14 @@ public class World {
 	private static int ammo = 0xFFFFD800;
 	private static int lifepack = 0xFF4CFF00;
 	private static int enemy = 0xFFFF0000;
+	private static final int MINIMAP_WIDTH =  70;
+	private static final int MINIMAP_HEIGHT = 70;
 	
 	public static Tile[] tiles;
 	public static int WIDTH, HEIGHT;
 	public static final int TILE_SIZE = 16;
 	public static int margin = 2;
+	public static boolean showMiniMap = false;
 	
 	public BufferedImage lightMap;
 	public int[] lightMapPixels;
@@ -120,6 +126,8 @@ public class World {
 		Game.player = new Player(0, 0, 16, 16, Game.spritesheet.getSprite(32, 0, 16, 16));
 		Game.entities.add(Game.player);
 		Game.world = new World("/" + level);
+		Game.miniMap = new BufferedImage(Game.world.WIDTH, Game.world.HEIGHT, BufferedImage.TYPE_INT_RGB);
+		Game.miniMapPixels = ((DataBufferInt)Game.miniMap.getRaster().getDataBuffer()).getData();
 		
 		//Game.world.getLightMap();
 		
@@ -149,6 +157,46 @@ public class World {
 		}
 	}
 	
+	public static void renderMiniMap(Graphics graphics) {
+		Arrays.fill(Game.miniMapPixels, 0xff000000);
+
+	    for(int xx = 0; xx < WIDTH; xx++) {
+	        for(int yy = 0; yy < HEIGHT; yy++) {
+	            if(tiles[xx + (yy * WIDTH)] instanceof WallTile) {
+	                Game.miniMapPixels[xx + (yy * WIDTH)] = wall;
+	            }
+	        }
+	    }
+		
+	    setPixel(Game.player.getX(), Game.player.getY(), player);
+
+	    renderEntities(Game.enemiesOnMap, enemy);
+
+	    renderEntities(Game.lifepacksOnMap, lifepack);
+
+	    renderEntities(Game.weaponsOnMap, weapon);
+
+	    renderEntities(Game.ammosOnMap, ammo);
+		
+	    int margin = 5;
+	    int screenWidth = Game.WIDTH;
+	    int posX = screenWidth - MINIMAP_WIDTH - margin;
+	    int posY = margin;
+
+	    if(showMiniMap)
+	    	graphics.drawImage(Game.miniMap, posX, posY, MINIMAP_WIDTH, MINIMAP_HEIGHT, null);
+	}
+	
+	public boolean isSolidTile(int x, int y) {
+	    int tileX = x / TILE_SIZE;
+	    int tileY = y / TILE_SIZE;
+
+	    if (tileX < 0 || tileY < 0 || tileX >= WIDTH || tileY >= HEIGHT)
+	        return true;
+
+	    return tiles[tileX + (tileY * WIDTH)] instanceof WallTile;
+	}
+	
 	public void render(Graphics graphics) {
 		int camera_xstart = Camera.x >> 4; //Usamos int neste momento pois não queremos números quebrados e apenas inteiros paea inciar o eixo x de nossa camera
 		int camera_ystart = Camera.y >> 4;
@@ -165,5 +213,16 @@ public class World {
 				tile.render(graphics);
 			}
 		}
+	}
+	
+	private static void setPixel(int x, int y, int color) {
+	    int miniMapX = x / 16;
+	    int miniMapY = y / 16;
+	    Game.miniMapPixels[miniMapX + (miniMapY * WIDTH)] = color;
+	}
+
+	private static void renderEntities(List<? extends Entity> entities, int color) {
+	    for (Entity e : entities)
+	        setPixel(e.getX(), e.getY(), color);
 	}
 }

@@ -54,15 +54,13 @@ public class Enemy extends Entity {
 				//Sound.playerReceivingDamageEffect.play();
 				animation();
 				
-				decrementPlayerLife();
+				Game.player.takeDamage();
 			}
 			
 			animation();
 		}
 		
 		animation();
-		
-		enemyCollidingWithBullet();
 		
 		damageAnimation();
 		
@@ -73,38 +71,17 @@ public class Enemy extends Entity {
 		}
 	}
 	
+	public void takeDamage() {
+		isDamaged = true;
+		life--;
+	}
+	
 	private boolean enemyCollidingWithPlayer() {
 		Rectangle currentEnemy = new Rectangle(this.getX() + maskX, this.getY() + maskY, mWidth, mHeight);
 		
 		Rectangle player = new Rectangle(Game.player.getX(), Game.player.getY(), 16,  16);
 		
 		return currentEnemy.intersects(player);
-	}
-	
-	private void enemyCollidingWithBullet() {
-		for(int i = 0; i < Game.bulletShoots.size(); i++) {
-			Entity currentBullet = Game.bulletShoots.get(i);
-			
-			if(currentBullet instanceof BulletShoot) 
-			{
-				if(Entity.isColidding(this, currentBullet))
-				{
-					isDamaged = true;
-					life--;
-					Game.bulletShoots.remove(i);
-					
-					return;
-				}
-			}
-		}
-	}
-	
-	private void decrementPlayerLife() {
-		if(Game.random.nextInt(100) < 10) 
-		{
-			 Game.player.life -= Game.random.nextInt(3);
-			 Game.player.isDamaged = true;
-		}
 	}
 	
 	private void damageAnimation() {

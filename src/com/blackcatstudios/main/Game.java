@@ -76,6 +76,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public static Modal noSaveGameFoundModal = new Modal("Nenhum save encontrado!", true, 850, 150, 40);
 	public int mouseX, mouseY;
 	public static int[] pixels;
+	public static BufferedImage miniMap;
+	public static int[] miniMapPixels;
 	
 	public Game() {
 		//Sound.musicBackground.loop();
@@ -101,6 +103,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
 		entities.add(player);
 		world = new World("/level1.png");
+		miniMap = new BufferedImage(world.WIDTH, world.HEIGHT, BufferedImage.TYPE_INT_RGB);
+		miniMapPixels = ((DataBufferInt)miniMap.getRaster().getDataBuffer()).getData();
 		menu = new Menu();
 		
 		//world.getLightMap();
@@ -249,6 +253,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	    
 	    ui.render(graphics);
 	    
+	    world.renderMiniMap(graphics);
+	    
 	    graphics.dispose();
 	    
 	    // ==== APÓS ISSO, APLICA O SCALE ====
@@ -345,6 +351,9 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			if(gameState != GameState.MENU)
 				gameState = GameState.PAUSE;
 		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_M)
+			world.showMiniMap = world.showMiniMap == true ? false : true;
 	}
 
 	@Override

@@ -65,6 +65,36 @@ public class Player extends Entity {
 		cameraClamp();
 	}
 	
+	public void takeDamage() {
+		if(Game.random.nextInt(100) < 10) 
+		{
+			 Game.player.life -= Game.random.nextInt(3);
+			 Game.player.isDamaged = true;
+		}
+	}
+	
+	public void render(Graphics graphics) {
+		if(!isDamaged) 
+		{
+			if(dir == right_dir) {
+				graphics.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+				
+				//Desenhar a arma do player para a direita
+				if(hasGun)
+					graphics.drawImage(Entity.WEAPON_RIGHT, this.getX() + 11 - Camera.x, this.getY() - 2 - Camera.y, null);
+			}
+			else if(dir == left_dir) {
+				graphics.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - 2 - Camera.y, null);
+				
+				//Desenhar a arma do player para a esquerda
+				if(hasGun)
+					graphics.drawImage(Entity.WEAPON_LEFT, this.getX() - 10 - Camera.x, this.getY() - 4 - Camera.y, null);
+			}
+		}
+		else
+			graphics.drawImage(playerDamage, this.getX() - Camera.x, this.getY() - Camera.y, null);
+	}
+	
 	private void walk() {
 		moved = false;
 		if(right && World.collidedWithWallTile((int)(x + speed), (int)y, width, height)) {
@@ -237,27 +267,5 @@ public class Player extends Entity {
 				Game.bulletShoots.add(bulletShoot);
 			}
 		}
-	}
-	
-	public void render(Graphics graphics) {
-		if(!isDamaged) 
-		{
-			if(dir == right_dir) {
-				graphics.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
-				
-				//Desenhar a arma do player para a direita
-				if(hasGun)
-					graphics.drawImage(Entity.WEAPON_RIGHT, this.getX() + 11 - Camera.x, this.getY() - 2 - Camera.y, null);
-			}
-			else if(dir == left_dir) {
-				graphics.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - 2 - Camera.y, null);
-				
-				//Desenhar a arma do player para a esquerda
-				if(hasGun)
-					graphics.drawImage(Entity.WEAPON_LEFT, this.getX() - 10 - Camera.x, this.getY() - 4 - Camera.y, null);
-			}
-		}
-		else
-			graphics.drawImage(playerDamage, this.getX() - Camera.x, this.getY() - Camera.y, null);
 	}
 }
