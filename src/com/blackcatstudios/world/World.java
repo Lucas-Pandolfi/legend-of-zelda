@@ -38,6 +38,57 @@ public class World {
 	public BufferedImage lightMap;
 	public int[] lightMapPixels;
 
+	//Gera o mundo do jogo randomicamente
+	/*public World(String path) {
+		Game.player.setX(0);
+		Game.player.setY(0);
+		
+		WIDTH = 100;
+		HEIGHT = 100;
+		tiles = new Tile[WIDTH * HEIGHT];
+		
+		for(int xx = 0; xx < WIDTH; xx++) 
+		{
+			for(int yy = 0; yy < HEIGHT; yy++) 
+			{
+				tiles[xx + yy * WIDTH] = new WallTile(xx*16, yy*16, Tile.TILE_WALL);
+			}
+		}
+		
+		int dir = 0;
+		int xx = 0;
+		int yy = 0;
+		
+		for(int i = 0; i < 200; i++) 
+		{
+			tiles[xx + yy * WIDTH] = new FloorTile(xx*16, yy*16, Tile.TILE_FLOOR);
+			if(dir == 0) {
+				//Direita
+				if(xx < WIDTH)
+					xx++;
+			}
+			else if(dir == 1) {
+				//Esquerda
+				if(xx > 0)
+					xx--;
+			}
+			else if(dir == 2) {
+				//Baixo
+				if(yy < HEIGHT)
+					yy++;
+			}
+			else if(dir == 3) {
+				//Cima
+				if(yy > 0)
+					yy--;
+			}
+			
+			if(Game.random.nextInt(100) < 30)
+				dir = Game.random.nextInt(4);
+		}
+	}*/
+	
+	//Gera o mundo do jogo a partir do png pré setado
 	public World(String path) {
 		try {
 			BufferedImage map = ImageIO.read(getClass().getResource(path));
@@ -54,7 +105,6 @@ public class World {
 			{
 				for(int yy = 0; yy < map.getHeight(); yy++) 
 				{
-					
 					int currentPixel = pixels[xx + (yy * map.getWidth())];
 					
 					tiles[xx + (yy * WIDTH)] = new FloorTile(xx * TILE_SIZE, yy * TILE_SIZE, Tile.TILE_FLOOR);

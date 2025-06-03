@@ -2,12 +2,16 @@ package com.blackcatstudios.main;
 
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -23,7 +27,7 @@ import java.util.List;
 import java.util.Random;
 import java.awt.image.DataBufferInt;
 
-
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import com.blackcatstudios.entities.Ammo;
@@ -123,6 +127,9 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		frame.add(this);
 		frame.setResizable(false); // Não permite o usuário a redimensionar a janela do jogo
 		frame.pack(); // Responsavel por calcular as dimensões e apresentar a janela.
+		
+		//addPersonalizedCursor();
+		
 		frame.setLocationRelativeTo(null); // Seta a janela do jogo no centro da tela 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Após clicar no botão para fechar a janela este comando encerra o jogo
 		frame.setVisible(true);
@@ -456,6 +463,21 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			else
 				showMessageGameOver = true;
 		}
+	}
+	
+	private void addPersonalizedCursor() {
+		Image cursorImage = null;
+		try {
+			cursorImage = ImageIO.read(getClass().getResource("/cursor.png"));
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+		Toolkit toolKit = Toolkit.getDefaultToolkit();
+		Image image = toolKit.getImage(getClass().getResource("/cursor.png"));
+		Cursor cursor = toolKit.createCustomCursor(image, new Point(0, 0), "img");
+		frame.setCursor(cursor);
+		frame.setIconImage(cursorImage);
 	}
 	
 	//TODO: Criar uma classe no package utils e passar mais parametros como a sprite que vc quer renderizar, width e height da sprite
