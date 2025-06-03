@@ -209,8 +209,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 			String newWorld = "level" + currentLevel + ".png";		
 
 			World.restartGame(newWorld);
-			Sound.stopAllSounds();
-			//Sound.musicBackground.loop();
+			//Sound.stopAllSounds();
+			//Sound.musicBackground.play();
 		}
 	}
 	
