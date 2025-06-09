@@ -89,7 +89,10 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 		addKeyListener(this);	
 		addMouseListener(this);	
 		addMouseMotionListener(this);
+		
+		//setPreferredSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize()));
 		setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
+		
 		initFrame();
 		
 		//Initialize objects
@@ -125,6 +128,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	public void initFrame() {
 		frame = new JFrame("Game teste - #1");
 		frame.add(this);
+		//frame.setUndecorated(true);//Desabilita as bordas da janela deixando a full screen
 		frame.setResizable(false); // Não permite o usuário a redimensionar a janela do jogo
 		frame.pack(); // Responsavel por calcular as dimensões e apresentar a janela.
 		
@@ -268,6 +272,8 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	    graphics = bufferStrategy.getDrawGraphics();
 	    
 	    graphics.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
+	    //graphics.drawImage(image, 0, 0, Toolkit.getDefaultToolkit().getScreenSize().width, Toolkit.getDefaultToolkit().getScreenSize().height, null);
+	    
 	    
 	    // ==== RENDERIZAÇÃO DO MENU (DEPOIS DO SCALE, PARA FICAR POR CIMA) ====
 	    if(gameState == GameState.GAME_OVER)
@@ -284,6 +290,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
 	}
 	
 	public void run() {
+		requestFocus();
 		long lastTime = System.nanoTime(); // Responsavel por pegar o tempo atual do nosso computador em nano segundos, é utilizado assim pela alta precisão
 		double amountOfTicks = 60.0;
 		double ns = 1000000000 / amountOfTicks; // Dividindo 1 segundo (formato de nano) com o amountOfTicks. o ns recebera o tempo para atualizar o game

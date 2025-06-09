@@ -18,6 +18,7 @@ import com.blackcatstudios.entities.Player;
 import com.blackcatstudios.entities.Weapon;
 import com.blackcatstudios.graphics.Spritesheet;
 import com.blackcatstudios.main.Game;
+import com.blackcatstudios.main.Pixel;
 
 public class World {
 	private static int wall = 0xFFFFFFFF;
@@ -201,8 +202,11 @@ public class World {
 		{
 			for(int yy = 0; yy < Game.HEIGHT; yy++) 
 			{
-				if(lightMapPixels != null && lightMapPixels[xx + (yy * Game.WIDTH)] == 0xffffffff)
-					Game.pixels[xx + (yy * Game.WIDTH)] = 0;
+				if(lightMapPixels != null && lightMapPixels[xx + (yy * Game.WIDTH)] == 0xffffffff) 
+				{
+					int pixel = Pixel.getLightBlend(Game.pixels[xx+yy * WIDTH], 0x808080, 0);
+					Game.pixels[xx + (yy * Game.WIDTH)] = pixel;
+				}
 			}
 		}
 	}
