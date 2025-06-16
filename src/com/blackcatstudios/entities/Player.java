@@ -84,7 +84,7 @@ public class Player extends Entity {
 					graphics.drawImage(Entity.WEAPON_RIGHT, this.getX() + 11 - Camera.x, this.getY() - 2 - Camera.y, null);
 			}
 			else if(dir == left_dir) {
-				graphics.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - 2 - Camera.y, null);
+				graphics.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 				
 				//Desenhar a arma do player para a esquerda
 				if(hasGun)
